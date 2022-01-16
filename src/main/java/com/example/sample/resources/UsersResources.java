@@ -14,12 +14,12 @@ public class UsersResources{
     @Autowired
     UsersRepository usersRepository;
 
-    @GetMapping("/usuarios")
+    @GetMapping("/users")
     public List<Users> listaUsers(){
         return usersRepository.findAll();
     }
 
-    @PostMapping("/usuario")
+    @PostMapping("/newUser")
     public Users saveUsers(@RequestBody Users users) {
         return usersRepository.save(users);
     }

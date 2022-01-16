@@ -20,7 +20,7 @@ public class UserStockBalanceResources {
         return userStockBalanceRepository.findAll();
     }
 
-    @PostMapping("/userStockItem")
+    @PostMapping("/newUserStock")
     public UserStockBalance saveUserStock(@RequestBody UserStockBalance userStockBalance){
         return userStockBalanceRepository.save(userStockBalance);
     }
