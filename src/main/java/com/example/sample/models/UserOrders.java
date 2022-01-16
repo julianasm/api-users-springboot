@@ -5,7 +5,13 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="user_orders")
 public class UserOrders implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

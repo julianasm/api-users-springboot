@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name="user_orders")
+@Table(name="user_stock_balances")
 @IdClass(UserStockBalanceId.class)
 public class UserStockBalance implements Serializable {
 

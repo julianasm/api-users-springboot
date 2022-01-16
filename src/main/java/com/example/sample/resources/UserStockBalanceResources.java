@@ -25,5 +25,4 @@ public class UserStockBalanceResources {
         return userStockBalanceRepository.save(userStockBalance);
     }
 
-
 }
