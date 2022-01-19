@@ -1,0 +1,1 @@
+ALTER TABLE user_orders ADD COLUMN remaining_volume;

@@ -1,27 +1,25 @@
 package com.example.sample.models;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-
+@Getter
+@Setter
 @Entity
 @Table(name="user_stock_balances")
-@IdClass(UserStockBalanceId.class)
 public class UserStockBalance implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne
-    @JoinColumn(name="id_user")
-    @Id
-    private Users users;
-
-    @Id
-    private Long id_stock;
+    @EmbeddedId
+    private UserStockBalanceId id;
 
     private String stock_symbol;
 
@@ -42,5 +40,16 @@ public class UserStockBalance implements Serializable {
 
 
 
+    public UserStockBalance(UserStockBalanceId id , String stock_symbol, String stock_name, Long volume) {
+        this.id = id;
 
+        this.stock_symbol = stock_symbol;
+
+        this.stock_name = stock_name;
+
+        this.volume = volume;
+
+        this.created_on = Timestamp.valueOf(LocalDateTime.now());
+        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+    }
 }

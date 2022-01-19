@@ -8,4 +8,6 @@ import lombok.Data;
 public class StockId {
 
     private Long id;
+    private String stock_symbol;
+    private String stock_name;
 }

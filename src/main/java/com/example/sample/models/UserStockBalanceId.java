@@ -1,12 +1,19 @@
 package com.example.sample.models;
 
 import com.example.sample.models.Users;
+
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class UserStockBalanceId implements Serializable {
 
+    @ManyToOne
+    @JoinColumn(name = "id_user")
     private Users users;
     private Long id_stock;
 
@@ -35,28 +42,15 @@ public class UserStockBalanceId implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(users, id_stock);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserStockBalanceId that = (UserStockBalanceId) o;
+        return Objects.equals(users, that.users) && Objects.equals(id_stock, that.id_stock);
     }
 
     @Override
-    public boolean equals(Object obj){
-        if (this == obj){
-            return true;
-        }
-        if (obj == null){
-            return false;
-        }
-        if (getClass() != obj.getClass()){
-            return false;
-        }
-        final UserStockBalanceId other = (UserStockBalanceId) obj;
-        if (this.users != other.users){
-            return false;
-        }
-        if (this.id_stock != other.id_stock){
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(users, id_stock);
     }
 }
