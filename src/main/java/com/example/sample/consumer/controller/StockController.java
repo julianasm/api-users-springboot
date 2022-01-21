@@ -25,7 +25,6 @@ public class StockController {
         return ResponseEntity.ok(stockId);
     }
 
-
     @PutMapping("/updateStock/{id}")
     public ResponseEntity<StockId> updateStockbyId(@PathVariable  Long id){
         return null;

@@ -42,7 +42,9 @@ public class UserOrders implements Serializable{
 
     private Timestamp updated_on;
 
-    public UserOrders(Users users, Long id_stock, String stock_symbol, String stock_name, Long volume, Integer type, Integer status, Double price) {
+    private Long remaining_volume;
+
+    public UserOrders(Users users, Long id_stock, String stock_symbol, String stock_name, Long volume, Integer type, Integer status, Double price, Long remaining_volume) {
         this.users = users;
         this.id_stock = id_stock;
         this.stock_symbol = stock_symbol;
@@ -53,6 +55,7 @@ public class UserOrders implements Serializable{
         this.status = status;
         this.created_on = Timestamp.valueOf(LocalDateTime.now());
         this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.remaining_volume = remaining_volume;
     }
 
     public UserOrders(){

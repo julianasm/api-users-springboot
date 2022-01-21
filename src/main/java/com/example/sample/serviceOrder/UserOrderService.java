@@ -6,6 +6,9 @@ import com.example.sample.repository.UserOrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
+
 @Service
 public class UserOrderService {
 
@@ -21,4 +24,5 @@ public class UserOrderService {
         System.out.println(userOrders.getUsers());
         return userOrdersRepository.save(userOrders);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.sample.resources;
 
+import com.example.sample.consumer.controller.StockController;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.Users;
 import com.example.sample.repository.UserOrdersRepository;
@@ -31,11 +32,28 @@ public class UserOrdersResources {
     @Autowired
     UserOrderService userOrderService;
 
+    @Autowired
+    StockController stockController;
+
     @PostMapping("/newOrder")
-    public ResponseEntity<UserOrders> salvar(@RequestBody UserOrderDTO dto) {
+    public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
         UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
-        return new ResponseEntity<>(userOrders, HttpStatus.CREATED);
+
+        List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
+                dto.getType(), dto.getId_user());
+
+        for (UserOrders order : userOrders1){
+            if ((order.getVolume() == dto.getVolume()) && dto.getType() == 1 ) {
+                if (dto.getPrice() >= order.getPrice()) {
+                    var volume = order.getRemaining_volume() - dto.getRemaining_volume();
+                   userOrdersRepository.findByIdOrder(volume, order.getId());
+                }
+            }
+        }
+
+        return new ResponseEntity<>(userOrders1, HttpStatus.CREATED);
+
     }
 
 }

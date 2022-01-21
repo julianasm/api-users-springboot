@@ -25,6 +25,8 @@ public class UserOrderDTO {
 
     private Double price;
 
+    private Long remaining_volume;
+
 
     public UserOrderDTO(){}
 
@@ -37,7 +39,8 @@ public class UserOrderDTO {
                 volume,
                 type,
                 status,
-                price);
+                price,
+                remaining_volume);
     }
 }
 

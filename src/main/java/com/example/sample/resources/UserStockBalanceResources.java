@@ -35,7 +35,6 @@ public class UserStockBalanceResources {
     @PostMapping("/newUserStock")
     public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-        System.out.println(dto.getId_user());
         UserStockBalance userStockBalance = userStockBalanceService.salvar(dto.transformaParaObjeto(users));
         return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
     }
