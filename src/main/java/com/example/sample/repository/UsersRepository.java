@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
+
+@Transactional
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Modifying
-    @Query(value = "UPDATE users set dollar_balance = :dollar_ballance where id = :id", nativeQuery = true)
+    @Query(value = "UPDATE users set dollar_balance = :dollar_balance where id = :id", nativeQuery = true)
     Integer findbyIdSetDollarBalance(@Param("id") Long id,
                                      @Param("dollar_balance") Double dollar_balance);
 
