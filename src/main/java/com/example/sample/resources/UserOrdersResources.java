@@ -61,29 +61,49 @@ public class UserOrdersResources {
 
 
     public boolean checkRemainingVolume(Long volumeOrder, Long volumeDto, Long remainingOrder, Long remainingDto, int typeOrder, int typeDto, Long orderId, Long dtoId){
-        if ((typeOrder == 1) && (typeDto == 2) && (volumeOrder > volumeDto)) {
+        if ((typeOrder == 1) && (typeDto == 2) && (volumeOrder >= volumeDto)) {
             var volumeBuy = remainingOrder - remainingDto;
             var volumeSell = remainingDto - volumeDto;
             userOrdersRepository.findByIdOrder(volumeSell, orderId);
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
+            if (volumeSell == 0){
+                userOrdersRepository.findbyIdStatus(orderId);
+            } else if (volumeBuy == 0){
+                userOrdersRepository.findbyIdStatus(dtoId);
+            }
             return true;
-        } else if ((typeOrder == 1) && (typeDto == 2) && (volumeOrder < volumeDto)) {
+        } else if ((typeOrder == 1) && (typeDto == 2) && (volumeOrder <= volumeDto)) {
             var volumeBuy = remainingOrder - volumeOrder;
             var volumeSell = remainingDto - volumeOrder;
             userOrdersRepository.findByIdOrder(volumeSell, orderId);
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
+            if (volumeSell == 0){
+                userOrdersRepository.findbyIdStatus(orderId);
+            } else if (volumeBuy == 0){
+                userOrdersRepository.findbyIdStatus(dtoId);
+            }
             return true;
-        } else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder < volumeDto)) {
+        } else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder <= volumeDto)) {
             var volumeBuy = remainingDto - remainingOrder;
             var volumeSell = remainingOrder - volumeOrder;
             userOrdersRepository.findByIdOrder(volumeSell, orderId);
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
+            if (volumeSell == 0){
+                userOrdersRepository.findbyIdStatus(orderId);
+            } else if (volumeBuy == 0){
+                userOrdersRepository.findbyIdStatus(dtoId);
+            }
             return true;
-        }  else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder > volumeDto)) {
+        }  else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder >= volumeDto)) {
             var volumeBuy = remainingDto - volumeDto;
             var volumeSell = remainingOrder - volumeDto;
             userOrdersRepository.findByIdOrder(volumeSell, orderId);
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
+            if (volumeSell == 0){
+                userOrdersRepository.findbyIdStatus(orderId);
+            } else if (volumeBuy == 0){
+                userOrdersRepository.findbyIdStatus(dtoId);
+            }
             return true;
         } else {
             return false;
@@ -97,14 +117,14 @@ public class UserOrdersResources {
     @PostMapping("/newOrder")
     public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-
+        System.out.println(dto.getType());
         if (dto.getType() == 1) {
             var total_amount = dto.getPrice() * dto.getVolume();
             if (total_amount <= users.getDollar_balance()) {
                 UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
                 List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
                         dto.getType(), dto.getId_user());
-
+                System.out.println(userOrders1);
                 for (UserOrders order : userOrders1) {
 
                     //compara o volume da ordem do tipo compra com o volume da ordem do tipo compra
@@ -115,6 +135,7 @@ public class UserOrdersResources {
                                     order.getRemaining_volume(), dto.getRemaining_volume(),
                                     order.getType(), dto.getType(),
                                     order.getId(), userOrders.getId());
+                            //pega o saldo
                             double final_balance1 = userOrders.getUsers().getDollar_balance();
                             double final_balance2 = order.getUsers().getDollar_balance();
                             updateDollarBalance(dto.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
@@ -127,15 +148,9 @@ public class UserOrdersResources {
                 }
                 return new ResponseEntity(userOrders, HttpStatus.CREATED);
             }
-        } else {
-            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-        }
-
-
-        if (dto.getType() == 2) {
+        } else if (dto.getType() == 2) {
             Optional<UserStockBalance> userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, dto.getId_stock()));
                 if (dto.getVolume() <= userStockBalance.get().getVolume()) {
-                    System.out.println(userStockBalance.get().getVolume());
                     UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
                     List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
                             dto.getType(), dto.getId_user());
@@ -164,7 +179,6 @@ public class UserOrdersResources {
             } else {
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         }
-
         return new ResponseEntity(HttpStatus.valueOf(205));
     }
 

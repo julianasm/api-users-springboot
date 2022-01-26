@@ -28,7 +28,9 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
     Integer findByIdOrder(@Param("remaining_volume") Long remaining_volume,
                           @Param("id") Long id);
 
-
+    @Modifying
+    @Query(value = "update user_orders set status = 0 where id = :id", nativeQuery = true)
+    Integer findbyIdStatus(@Param("id") Long id);
 }
 
 
