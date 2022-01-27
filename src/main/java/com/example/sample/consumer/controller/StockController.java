@@ -1,5 +1,6 @@
 package com.example.sample.consumer.controller;
 
+import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.model.StockId;
 import com.example.sample.consumer.service.StockService;
 import com.example.sample.models.UserOrders;
@@ -18,15 +19,15 @@ public class StockController {
     private StockService stockService;
 
     @GetMapping("/stocks/{id}")
-    public ResponseEntity<StockId> getStockbyId(@PathVariable Long id){
+    public ResponseEntity<StocksDto> getStockbyId(@PathVariable Long id){
 
-        StockId stockId = this.stockService.stockbyId(id);
+        StocksDto stocksDto = this.stockService.stockbyId(id);
 
-        return ResponseEntity.ok(stockId);
+        return ResponseEntity.ok(stocksDto);
     }
 
-    @PutMapping("/updateStock/{id}")
-    public ResponseEntity<StockId> updateStockbyId(@PathVariable  Long id){
+    @PutMapping("/updateStock")
+    public ResponseEntity<StockId> updateStockbyId(){
         return null;
 
     }

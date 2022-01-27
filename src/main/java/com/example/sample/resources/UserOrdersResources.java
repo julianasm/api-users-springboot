@@ -1,6 +1,8 @@
 package com.example.sample.resources;
 
+import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.controller.StockController;
+import com.example.sample.consumer.service.StockService;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;
@@ -30,6 +32,9 @@ public class UserOrdersResources {
     public List<UserOrders> listaPedidos(){
         return userOrdersRepository.findAll();
     }
+
+    @Autowired
+    StockService stockService;
 
     @Autowired
     UsersRepository usersRepository;
@@ -112,6 +117,18 @@ public class UserOrdersResources {
     };
 
 
+    public void updateStockPrice(Long id_stock){
+            Double bid_min_price = userOrdersRepository.findByIdStockMinPriceBid(id_stock);
+            Double bid_max_price = userOrdersRepository.findByIdStockMaxPriceBid(id_stock);
+            Double ask_min_price = userOrdersRepository.findByIdStockMinPriceAsk(id_stock);
+            Double ask_max_price = userOrdersRepository.findByIdStockMaxPriceAsk(id_stock);
+
+        StocksDto stocksDto = new StocksDto(id_stock, bid_min_price, bid_max_price, ask_min_price, ask_max_price);
+
+        stockService.UpdateStockbyPrice(stocksDto);
+
+        }
+
 
 
     @PostMapping("/newOrder")
@@ -122,13 +139,16 @@ public class UserOrdersResources {
             var total_amount = dto.getPrice() * dto.getVolume();
             if (total_amount <= users.getDollar_balance()) {
                 UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
+
+                updateStockPrice(dto.getId_stock());
+
                 List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
                         dto.getType(), dto.getId_user());
-                System.out.println(userOrders1);
+
                 for (UserOrders order : userOrders1) {
 
                     //compara o volume da ordem do tipo compra com o volume da ordem do tipo compra
-                    if ((order.getVolume() >= dto.getVolume()) && (dto.getType() == 1) && (order.getStatus() == 1)) {
+                    if ((order.getVolume() >= dto.getVolume()) && (dto.getType() == 1)) {
                         // se o valor da ordem do tipo compra for maior ou igual
                         if ((dto.getPrice() >= order.getPrice())) {
                             checkRemainingVolume(order.getVolume(), dto.getVolume(),
@@ -156,7 +176,7 @@ public class UserOrdersResources {
                             dto.getType(), dto.getId_user());
 
                     for (UserOrders order : userOrders1) {
-                        if ((order.getVolume() <= dto.getVolume()) && (order.getStatus() == 1)) {
+                        if ((order.getVolume() <= dto.getVolume())) {
                             if (dto.getPrice() <= order.getPrice()) {
                                 checkRemainingVolume(order.getVolume(), dto.getVolume(),
                                         order.getRemaining_volume(), dto.getRemaining_volume(),

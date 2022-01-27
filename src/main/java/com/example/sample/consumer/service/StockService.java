@@ -1,5 +1,6 @@
 package com.example.sample.consumer.service;
 
+import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.model.StockId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -13,22 +14,30 @@ public class StockService {
     @Autowired
     private WebClient webClient;
 
-    public StockId stockbyId(Long id) {
+    StocksDto stocksDto;
 
-        Mono<StockId> monoStock = this.webClient
+    public StocksDto stockbyId(Long id) {
+
+        Mono<StocksDto> monoStock = this.webClient
                 .method(HttpMethod.GET)
                 .uri("/stocks/{id}", id)
                 .retrieve()
-                .bodyToMono(StockId.class);
+                .bodyToMono(StocksDto.class);
 
-        StockId stockId =  monoStock.block();
+        StocksDto stocksDto =  monoStock.block();
 
-        Mono<StockId> monoStockPrice = this.webClient
+
+        return stocksDto;
+    }
+
+    public void UpdateStockbyPrice(StocksDto stocksDto) {
+        Mono<StocksDto> monoStockPrice = this.webClient
                 .method(HttpMethod.PUT)
-                .uri("/updateStocks/{id}", id)
+                .uri("/update_stocks")
+                .body(Mono.just(stocksDto), StocksDto.class)
                 .retrieve()
-                .bodyToMono(StockId.class);
+                .bodyToMono(StocksDto.class);
 
-        return stockId;
+        monoStockPrice.block();
     }
 }

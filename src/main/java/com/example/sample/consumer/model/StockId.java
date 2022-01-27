@@ -3,9 +3,13 @@ package com.example.sample.consumer.model;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 
+@Setter
+@Getter
 @Data
 @AllArgsConstructor
 public class StockId {
@@ -19,4 +23,8 @@ public class StockId {
     private Double bid_max;
     private Timestamp created_on;
     private Timestamp updated_on;
+
+    public StockId() {
+    }
+
 }
