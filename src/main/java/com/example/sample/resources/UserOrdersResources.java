@@ -73,7 +73,8 @@ public class UserOrdersResources {
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
             if (volumeSell == 0){
                 userOrdersRepository.findbyIdStatus(orderId);
-            } else if (volumeBuy == 0){
+            }
+            if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
             return true;
@@ -84,7 +85,8 @@ public class UserOrdersResources {
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
             if (volumeSell == 0){
                 userOrdersRepository.findbyIdStatus(orderId);
-            } else if (volumeBuy == 0){
+            }
+            if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
             return true;
@@ -95,7 +97,8 @@ public class UserOrdersResources {
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
             if (volumeSell == 0){
                 userOrdersRepository.findbyIdStatus(orderId);
-            } else if (volumeBuy == 0){
+            }
+            if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
             return true;
@@ -106,7 +109,8 @@ public class UserOrdersResources {
             userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
             if (volumeSell == 0){
                 userOrdersRepository.findbyIdStatus(orderId);
-            } else if (volumeBuy == 0){
+            }
+            if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
             return true;
@@ -128,7 +132,6 @@ public class UserOrdersResources {
         stockService.UpdateStockbyPrice(stocksDto);
 
         }
-
 
 
     @PostMapping("/newOrder")
