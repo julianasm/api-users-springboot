@@ -28,7 +28,7 @@ public class UsersResources{
         return usersRepository.findAll();
     }
 
-    @PostMapping("/newUser")
+    @PostMapping("/new_user")
     public ResponseEntity<Users> salvar(@RequestBody UsersDTO dto) {
         Users users = dto.transformaParaObjeto();
         users = usersRepository.save(users);

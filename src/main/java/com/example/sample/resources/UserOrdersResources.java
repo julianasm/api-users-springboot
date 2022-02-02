@@ -60,8 +60,22 @@ public class UserOrdersResources {
         return final_balance;
     }
 
-    public int updateStockBalance() {
-        return 1;
+    public void updateStockBalance(Users user_id, Long stock_id, String stock_symbol, String stock_name, Long volume, int type) {
+        if (type == 2){
+            UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
+            volume = userStockBalance.getVolume() - volume;
+            userStockBalance.setVolume(volume);
+            userStockBalanceRepository.save(userStockBalance);
+        }
+        if (type == 1){
+            userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
+                userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, volume)));
+            } else {
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
+                volume = volume + userStockBalance.getVolume();
+                userStockBalance.setVolume(volume);
+                userStockBalanceRepository.save(userStockBalance);
+        }
     }
 
 
@@ -134,7 +148,7 @@ public class UserOrdersResources {
         }
 
 
-    @PostMapping("/newOrder")
+    @PostMapping("/new_order")
     public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
         System.out.println(dto.getType());
@@ -161,8 +175,10 @@ public class UserOrdersResources {
                             //pega o saldo
                             double final_balance1 = userOrders.getUsers().getDollar_balance();
                             double final_balance2 = order.getUsers().getDollar_balance();
-                            updateDollarBalance(dto.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
+                            updateDollarBalance(order.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
                             updateDollarBalance(order.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
+                            updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), dto.getType());
+                            updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), order.getType());
                         } else {
                             System.out.println("nenhuma ordem compativel no momento!");
                         }
@@ -188,7 +204,9 @@ public class UserOrdersResources {
                                 double final_balance1 = userOrders.getUsers().getDollar_balance();
                                 double final_balance2 = order.getUsers().getDollar_balance();
                                 updateDollarBalance(dto.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
-                                updateDollarBalance(order.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
+                                updateDollarBalance(dto.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
+                                updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), dto.getType());
+                                updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), order.getType());
                             } else {
                                 System.out.println("nenhuma ordem compativel no momento!");
                             }

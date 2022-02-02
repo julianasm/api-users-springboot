@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  apiusers:
+    image: "apiusersjava:latest"
+    ports:
+      - 8080:8080
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/postgres
+  apistocks:
+    image: "apistocks:v1"
+    ports:
+      - 8082:8082
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/postgres2
+  database:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres # The PostgreSQL user (useful to connect to the database)
+      POSTGRES_PASSWORD: solinftec # The PostgreSQL password (useful to connect to the database)
+      POSTGRES_DB: postgres2 # The PostgreSQL default database (automatically created at first launch)
+    volumes:
+      - /var/usr/lib/postgresql/14/main
+    restart: always
+  front:
+    image: "oktaapp:v1"
+    ports:
+      - 8081:80
