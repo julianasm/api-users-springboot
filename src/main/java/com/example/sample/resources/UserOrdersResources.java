@@ -60,21 +60,36 @@ public class UserOrdersResources {
         return final_balance;
     }
 
-    public void updateStockBalance(Users user_id, Long stock_id, String stock_symbol, String stock_name, Long volume, int type) {
+    public void updateStockBalance(Users user_id, Long stock_id, String stock_symbol, String stock_name, Long volume_buy, Long volume_sell, int type) {
         if (type == 2){
-            UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
-            volume = userStockBalance.getVolume() - volume;
-            userStockBalance.setVolume(volume);
-            userStockBalanceRepository.save(userStockBalance);
-        }
-        if (type == 1){
-            userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
-                userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, volume)));
-            } else {
+            if (volume_sell > volume_buy){
+                var balance = volume_sell - volume_buy;
                 UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
-                volume = volume + userStockBalance.getVolume();
+                var volume = userStockBalance.getVolume() - balance;
                 userStockBalance.setVolume(volume);
                 userStockBalanceRepository.save(userStockBalance);
+            } else if (volume_sell <= volume_buy){
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
+                var volume = userStockBalance.getVolume() - volume_sell;
+                userStockBalance.setVolume(volume);
+                userStockBalanceRepository.save(userStockBalance);
+            }
+        }
+        if (type == 1){
+            if (volume_buy > volume_sell){
+                var balance = volume_buy - volume_sell;
+                userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
+                        userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, balance)));
+            } else if (volume_buy <= volume_sell){
+                int initializer = 0;
+                var balance = Long.valueOf(initializer);
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
+                        userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, balance)));
+                balance = volume_buy + userStockBalance.getVolume();
+                userStockBalance.setVolume(balance);
+                userStockBalanceRepository.save(userStockBalance);
+            }
+
         }
     }
 
@@ -177,8 +192,8 @@ public class UserOrdersResources {
                             double final_balance2 = order.getUsers().getDollar_balance();
                             updateDollarBalance(order.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
                             updateDollarBalance(order.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
-                            updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), dto.getType());
-                            updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), order.getType());
+                            updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), order.getVolume(), dto.getType());
+                            updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), dto.getVolume(), order.getVolume(), order.getType());
                         } else {
                             System.out.println("nenhuma ordem compativel no momento!");
                         }
@@ -205,8 +220,8 @@ public class UserOrdersResources {
                                 double final_balance2 = order.getUsers().getDollar_balance();
                                 updateDollarBalance(dto.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
                                 updateDollarBalance(dto.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
-                                updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), dto.getType());
-                                updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), order.getType());
+                                updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), order.getVolume(), dto.getVolume(), dto.getType());
+                                updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), dto.getVolume(), order.getType());
                             } else {
                                 System.out.println("nenhuma ordem compativel no momento!");
                             }
