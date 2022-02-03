@@ -172,8 +172,16 @@ public class UserOrdersResources {
             if (total_amount <= users.getDollar_balance()) {
                 UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
 
+                // retem o valor do usuario mesmo antes da ordem fechar
+                var balance = users.getDollar_balance() - total_amount;
+                System.out.println(balance);
+                users.setDollar_balance(balance);
+                usersRepository.save(users);
+
+                // atualiza o bid min/bid max
                 updateStockPrice(dto.getId_stock());
 
+                // busca uma ordem equivalente
                 List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
                         dto.getType(), dto.getId_user());
 
@@ -190,10 +198,10 @@ public class UserOrdersResources {
                             //pega o saldo
                             double final_balance1 = userOrders.getUsers().getDollar_balance();
                             double final_balance2 = order.getUsers().getDollar_balance();
-                            updateDollarBalance(order.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
+                            //updateDollarBalance(order.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
                             updateDollarBalance(order.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
                             updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), dto.getVolume(), order.getVolume(), dto.getType());
-                            updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), dto.getVolume(), order.getVolume(), order.getType());
+                            //updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), dto.getVolume(), order.getVolume(), order.getType());
                         } else {
                             System.out.println("nenhuma ordem compativel no momento!");
                         }
@@ -203,9 +211,17 @@ public class UserOrdersResources {
                 return new ResponseEntity(userOrders, HttpStatus.CREATED);
             }
         } else if (dto.getType() == 2) {
-            Optional<UserStockBalance> userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, dto.getId_stock()));
-                if (dto.getVolume() <= userStockBalance.get().getVolume()) {
+            UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, dto.getId_stock())).orElseThrow();
+                if (dto.getVolume() <= userStockBalance.getVolume()) {
+
+                    // salva a ordem
                     UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
+
+                    // retem o dinheiro
+                    userStockBalance.setVolume(dto.getVolume());
+                    userStockBalanceRepository.save(userStockBalance);
+
+                    // encontra a ordem compativel
                     List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),
                             dto.getType(), dto.getId_user());
 
@@ -219,8 +235,8 @@ public class UserOrdersResources {
                                 double final_balance1 = userOrders.getUsers().getDollar_balance();
                                 double final_balance2 = order.getUsers().getDollar_balance();
                                 updateDollarBalance(dto.getPrice(), dto.getVolume(), dto.getId_user(), dto.getType(), final_balance1);
-                                updateDollarBalance(dto.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
-                                updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), order.getVolume(), dto.getVolume(), dto.getType());
+                                //updateDollarBalance(dto.getPrice(), order.getVolume(), order.getUsers().getId(), order.getType(), final_balance2);
+                                //updateStockBalance(users, dto.getId_stock(), dto.getStock_symbol(), dto.getStock_name(), order.getVolume(), dto.getVolume(), dto.getType());
                                 updateStockBalance(order.getUsers(), order.getId_stock(), order.getStock_symbol(), order.getStock_name(), order.getVolume(), dto.getVolume(), order.getType());
                             } else {
                                 System.out.println("nenhuma ordem compativel no momento!");
