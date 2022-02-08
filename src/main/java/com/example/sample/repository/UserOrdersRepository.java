@@ -23,6 +23,9 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
                                                       @Param("type") Integer type,
                                                       @Param("id_user") Long id_user);
 
+    @Query(value = "SELECT * from user_orders uo where id_user = :id_user", nativeQuery = true)
+    List<UserOrders> findByIdUser(@Param("id_user") Long id);
+
     @Modifying
     @Query(value = "UPDATE  user_orders set remaining_volume = :remaining_volume where id = :id", nativeQuery = true)
     Integer findByIdOrder(@Param("remaining_volume") Long remaining_volume,

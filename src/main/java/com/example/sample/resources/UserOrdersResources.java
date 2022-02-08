@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api")
 public class UserOrdersResources {
@@ -28,9 +29,16 @@ public class UserOrdersResources {
     @Autowired
     UserOrdersRepository userOrdersRepository;
 
+    @CrossOrigin
     @GetMapping("/orders")
     public List<UserOrders> listaPedidos(){
         return userOrdersRepository.findAll();
+    }
+
+    @CrossOrigin
+    @GetMapping("/orders/{id}")
+    public List<UserOrders> listaOrdemPorId(@PathVariable Long id){
+        return userOrdersRepository.findByIdUser(id);
     }
 
     @Autowired
@@ -150,7 +158,7 @@ public class UserOrdersResources {
     };
 
 
-    public void updateStockPrice(Long id_stock){
+    public void updateStockPrice(Long id_stock, String token){
             Double bid_min_price = userOrdersRepository.findByIdStockMinPriceBid(id_stock);
             Double bid_max_price = userOrdersRepository.findByIdStockMaxPriceBid(id_stock);
             Double ask_min_price = userOrdersRepository.findByIdStockMinPriceAsk(id_stock);
@@ -158,13 +166,13 @@ public class UserOrdersResources {
 
         StocksDto stocksDto = new StocksDto(id_stock, bid_min_price, bid_max_price, ask_min_price, ask_max_price);
 
-        stockService.UpdateStockbyPrice(stocksDto);
+        stockService.UpdateStockbyPrice(stocksDto, token);
 
         }
 
-
+    @CrossOrigin
     @PostMapping("/new_order")
-    public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto) {
+    public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto, @RequestHeader("Authorization") String token) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
         System.out.println(dto.getType());
         if (dto.getType() == 1) {
@@ -179,7 +187,7 @@ public class UserOrdersResources {
                 usersRepository.save(users);
 
                 // atualiza o bid min/bid max
-                updateStockPrice(dto.getId_stock());
+                updateStockPrice(dto.getId_stock(), token);
 
                 // busca uma ordem equivalente
                 List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),

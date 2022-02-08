@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 @Transactional
 @Repository
 public interface UserStockBalanceRepository extends JpaRepository <UserStockBalance, UserStockBalanceId>{
+    UserStockBalance findAllById(UserStockBalanceId userStockBalanceId);
 
 
     // se existirem na tabela, fazer o update na tabela

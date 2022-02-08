@@ -7,10 +7,7 @@ import com.example.sample.models.UserOrders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class StockController {
@@ -19,15 +16,15 @@ public class StockController {
     private StockService stockService;
 
     @GetMapping("/stocks/{id}")
-    public ResponseEntity<StocksDto> getStockbyId(@PathVariable Long id){
+    public ResponseEntity<StocksDto> getStockbyId(@PathVariable Long id, @RequestHeader("Authorization") String token){
 
-        StocksDto stocksDto = this.stockService.stockbyId(id);
+        StocksDto stocksDto = this.stockService.stockbyId(id, token);
 
         return ResponseEntity.ok(stocksDto);
     }
 
     @PutMapping("/updateStock")
-    public ResponseEntity<StockId> updateStockbyId(){
+    public ResponseEntity<StockId> updateStockbyId(@RequestHeader("Authorization") String token){
         return null;
 
     }
