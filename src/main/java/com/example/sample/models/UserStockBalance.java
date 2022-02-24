@@ -3,6 +3,8 @@ package com.example.sample.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,8 +29,10 @@ public class UserStockBalance implements Serializable {
 
     private Long volume;
 
+    @CreationTimestamp
     private Timestamp created_on;
 
+    @UpdateTimestamp
     private Timestamp updated_on;
 
 

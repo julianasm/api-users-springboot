@@ -2,12 +2,14 @@ package com.example.sample.models;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Setter
 @Getter
 @Entity
 @Table(name="user_orders")

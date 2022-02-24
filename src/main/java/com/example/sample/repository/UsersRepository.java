@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Transactional
 @Repository
@@ -18,6 +19,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     Integer findbyIdSetDollarBalance(@Param("id") Long id,
                                      @Param("dollar_balance") Double dollar_balance);
 
-
+    @Query(value = "SELECT * FROM users where username = :username", nativeQuery = true)
+    Optional<Users> findByUsername(@Param("username") String username);
 
 }

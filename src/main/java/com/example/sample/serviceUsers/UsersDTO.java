@@ -11,22 +11,18 @@ import java.sql.Timestamp;
 @Getter
 public class UsersDTO {
 
-    private String username;
+    private Long id;
 
-    private String password;
+    public UsersDTO(Long id){
+        this.id = id;
+    }
 
-    private Double dollar_balance;
-
-    private Boolean enabled = true;
-
-    public UsersDTO(){}
-
+    public UsersDTO() {
+    }
 
     public Users transformaParaObjeto(){
         return new Users(
-                username,
-                password,
-                dollar_balance
+                    id
                 );
     }
 }

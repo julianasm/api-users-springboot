@@ -11,8 +11,12 @@ import com.example.sample.models.Users;
 import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
+import com.example.sample.serviceOrder.UpdateOrderDto;
 import com.example.sample.serviceOrder.UserOrderDTO;
 import com.example.sample.serviceOrder.UserOrderService;
+import com.example.sample.serviceUsers.UsersDTO;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +27,21 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api")
 public class UserOrdersResources {
 
-    @Autowired
-    UserOrdersRepository userOrdersRepository;
+    private final StockService stockService;
+
+    private final UsersRepository usersRepository;
+
+    private final UserStockBalanceRepository userStockBalanceRepository;
+
+    private final UserOrderService userOrderService;
+
+    private final StockController stockController;
+
+    private final UserOrdersRepository userOrdersRepository;
 
     @CrossOrigin
     @GetMapping("/orders")
@@ -41,21 +55,30 @@ public class UserOrdersResources {
         return userOrdersRepository.findByIdUser(id);
     }
 
-    @Autowired
-    StockService stockService;
+    @CrossOrigin
+    @PostMapping("/order-update/{status}")
+    public ResponseEntity<UserOrders> updateOrder(@RequestBody UpdateOrderDto dto, @PathVariable("status") Integer status, @RequestHeader("Authorization") String token) throws Exception {
+        try {
+            System.out.println("chegou aqui");
+            return ResponseEntity.ok().body(userOrderService.updateStatus(dto.getId(), status));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
-    @Autowired
-    UsersRepository usersRepository;
+    public void returnDollarBalance(Double price, Long volume, Long id, Double old_balance, Double match_cost) {
+        var order_cost = price * volume;
+        var return_value = order_cost - match_cost;
+        if (return_value > 0){
+            Users users = usersRepository.findById(id).orElseThrow();
+            users.setDollar_balance((old_balance + return_value));
+        }
+    }
 
-    @Autowired
-    UserStockBalanceRepository userStockBalanceRepository;
+    public void returnStockBalance(Long id, Long id_stock, Double old_balance, Double match_cost, Double order_cost ) {
+        var return_value = order_cost - match_cost;
 
-    @Autowired
-    UserOrderService userOrderService;
-
-    @Autowired
-    StockController stockController;
-
+    }
 
     public double updateDollarBalance(Double price, Long volume, Long id, int type, Double final_balance) {
         if (type == 1) {
@@ -70,10 +93,9 @@ public class UserOrdersResources {
 
     public void updateStockBalance(Users user_id, Long stock_id, String stock_symbol, String stock_name, Long volume_buy, Long volume_sell, int type) {
         if (type == 2){
-            if (volume_sell > volume_buy){
-                var balance = volume_sell - volume_buy;
+            if (volume_sell > volume_buy){;
                 UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
-                var volume = userStockBalance.getVolume() - balance;
+                var volume = userStockBalance.getVolume() - volume_buy;
                 userStockBalance.setVolume(volume);
                 userStockBalanceRepository.save(userStockBalance);
             } else if (volume_sell <= volume_buy){
@@ -114,18 +136,20 @@ public class UserOrdersResources {
             if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
+            System.out.println("bateu aqui 1");
             return true;
         } else if ((typeOrder == 1) && (typeDto == 2) && (volumeOrder <= volumeDto)) {
             var volumeBuy = remainingOrder - volumeOrder;
             var volumeSell = remainingDto - volumeOrder;
-            userOrdersRepository.findByIdOrder(volumeSell, orderId);
-            userOrdersRepository.findByIdOrder(volumeBuy, dtoId);
+            userOrdersRepository.findByIdOrder(volumeSell, dtoId);
+            userOrdersRepository.findByIdOrder(volumeBuy, orderId);
             if (volumeSell == 0){
-                userOrdersRepository.findbyIdStatus(orderId);
-            }
-            if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
+            if (volumeBuy == 0){
+                userOrdersRepository.findbyIdStatus(orderId);
+            }
+            System.out.println("bateu aqui 2");
             return true;
         } else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder <= volumeDto)) {
             var volumeBuy = remainingDto - remainingOrder;
@@ -138,6 +162,7 @@ public class UserOrdersResources {
             if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
+            System.out.println("bateu aqui 3");
             return true;
         }  else if ((typeOrder == 2) && (typeDto == 1) && (volumeOrder >= volumeDto)) {
             var volumeBuy = remainingDto - volumeDto;
@@ -150,6 +175,7 @@ public class UserOrdersResources {
             if (volumeBuy == 0){
                 userOrdersRepository.findbyIdStatus(dtoId);
             }
+            System.out.println("bateu aqui 4");
             return true;
         } else {
             return false;
@@ -159,12 +185,12 @@ public class UserOrdersResources {
 
 
     public void updateStockPrice(Long id_stock, String token){
-            Double bid_min_price = userOrdersRepository.findByIdStockMinPriceBid(id_stock);
-            Double bid_max_price = userOrdersRepository.findByIdStockMaxPriceBid(id_stock);
-            Double ask_min_price = userOrdersRepository.findByIdStockMinPriceAsk(id_stock);
-            Double ask_max_price = userOrdersRepository.findByIdStockMaxPriceAsk(id_stock);
+            Double bid_min = userOrdersRepository.findByIdStockMinPriceBid(id_stock);
+            Double bid_max = userOrdersRepository.findByIdStockMaxPriceBid(id_stock);
+            Double ask_min = userOrdersRepository.findByIdStockMinPriceAsk(id_stock);
+            Double ask_max = userOrdersRepository.findByIdStockMaxPriceAsk(id_stock);
 
-        StocksDto stocksDto = new StocksDto(id_stock, bid_min_price, bid_max_price, ask_min_price, ask_max_price);
+        StocksDto stocksDto = new StocksDto(id_stock, bid_min, bid_max, ask_min, ask_max);
 
         stockService.UpdateStockbyPrice(stocksDto, token);
 
@@ -174,7 +200,6 @@ public class UserOrdersResources {
     @PostMapping("/new_order")
     public ResponseEntity<List<UserOrders>> salvar(@RequestBody UserOrderDTO dto, @RequestHeader("Authorization") String token) {
         Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-        System.out.println(dto.getType());
         if (dto.getType() == 1) {
             var total_amount = dto.getPrice() * dto.getVolume();
             if (total_amount <= users.getDollar_balance()) {
@@ -226,8 +251,12 @@ public class UserOrdersResources {
                     UserOrders userOrders = userOrderService.salvar(dto.transformaParaObjeto(users));
 
                     // retem o dinheiro
-                    userStockBalance.setVolume(dto.getVolume());
+                    var volume = userStockBalance.getVolume() - dto.getVolume();
+                    userStockBalance.setVolume(volume);
                     userStockBalanceRepository.save(userStockBalance);
+
+                    // atualiza o bid ask/ask max
+                    updateStockPrice(dto.getId_stock(), token);
 
                     // encontra a ordem compativel
                     List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(dto.getId_stock(),

@@ -8,6 +8,8 @@ import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
 import com.example.sample.serviceStockBalance.UserStockBalanceDTO;
 import com.example.sample.serviceStockBalance.UserStockBalanceService;
+import com.example.sample.serviceUsers.UsersDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @CrossOrigin
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value="/api")
 public class UserStockBalanceResources {
 
@@ -26,13 +29,13 @@ public class UserStockBalanceResources {
     @Autowired
     UsersRepository usersRepository;
 
-    @Autowired
-    UserStockBalanceService userStockBalanceService;
+
+    private final UserStockBalanceService userStockBalanceService;
 
     @CrossOrigin
-    @GetMapping("/user_stock/{id}/{id_stock}")
-    public <List> UserStockBalance listaUserStock(@PathVariable Users id, @PathVariable Long id_stock) {
-        UserStockBalance userStockBlance = userStockBalanceRepository.findAllById(new UserStockBalanceId(id, id_stock));
+    @GetMapping("/user_stock/{id}")
+    public List<UserStockBalance> listaUserStock(@PathVariable Long id) {
+        List<UserStockBalance> userStockBlance = userStockBalanceRepository.findAllByIdUser(id);
         return userStockBlance;
     }
 
@@ -43,12 +46,13 @@ public class UserStockBalanceResources {
         return userStockBalanceRepository.findAll();
     }
 
-    @CrossOrigin
-    @PostMapping("/newUserStock")
-    public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
-        Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-        UserStockBalance userStockBalance = userStockBalanceService.salvar(dto.transformaParaObjeto(users));
-        return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
-    }
+//    @CrossOrigin
+//    @PostMapping("/newUserStock")
+//    public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
+//
+//        Users users = userStockBalanceService.findById(, dto.getId_stock());
+//        UserStockBalance userStockBalance = userStockBalanceService.salvar(dto.transformaParaObjeto(users));
+//        return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
+//    }
 
 }

@@ -3,21 +3,16 @@ package com.example.sample.serviceOrder;
 
 import com.example.sample.models.UserOrders;
 import com.example.sample.repository.UserOrdersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
+import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
 public class UserOrderService {
 
     private final UserOrdersRepository userOrdersRepository;
-
-    @Autowired
-    public UserOrderService(UserOrdersRepository userOrdersRepository) {
-        this.userOrdersRepository = userOrdersRepository;
-    }
 
 
     public UserOrders salvar(UserOrders userOrders) {
@@ -25,4 +20,15 @@ public class UserOrderService {
         return userOrdersRepository.save(userOrders);
     }
 
+    public UserOrders updateStatus(Long id, Integer status) throws Exception {
+        Optional<UserOrders> userOrders = userOrdersRepository.findById(id);
+        if (userOrders.isPresent()){
+            userOrders.get().setStatus(status);
+            userOrdersRepository.save(userOrders.get());
+            return userOrders.get();
+        } else {
+            System.out.println("erro");
+            throw new Exception("ORDER_NOT_FOUND");
+        }
+    }
 }

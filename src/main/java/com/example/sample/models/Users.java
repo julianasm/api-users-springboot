@@ -36,16 +36,22 @@ public class Users implements Serializable {
     private Timestamp updated_on;
 
     public Users () {
-
         this.enabled = true;
         this.created_on = Timestamp.valueOf(LocalDateTime.now());
         this.updated_on = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public Users(String username, String password, Double dollar_balance) {
+    public Users(Long id) {
+        this.id = id;
+        this.created_on = Timestamp.valueOf(LocalDateTime.now());
+        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    public Users(String username, String password, Double dollar_balance, Boolean enabled) {
         this.username = username;
         this.password = password;
         this.dollar_balance = dollar_balance;
+        this.enabled = enabled;
         this.created_on = Timestamp.valueOf(LocalDateTime.now());
         this.updated_on = Timestamp.valueOf(LocalDateTime.now());
     }

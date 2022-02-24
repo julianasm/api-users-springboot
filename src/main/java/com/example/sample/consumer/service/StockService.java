@@ -1,5 +1,6 @@
 package com.example.sample.consumer.service;
 
+import com.example.sample.consumer.DTO.StockInfoDto;
 import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.model.StockId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,39 @@ public class StockService {
 
         return stocksDto;
     }
+
+    public StockInfoDto stockInfoById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+
+        Mono<StockInfoDto> monoStock = this.webClient
+                .method(HttpMethod.GET)
+                .uri("/stock-info/{id}", id)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono(StockInfoDto.class);
+
+        StockInfoDto stockInfoDto =  monoStock.block();
+
+
+        return stockInfoDto;
+    }
+
+
+
+    public StockInfoDto[] getAllStocks(@RequestHeader("Authorization") String token) {
+
+        Mono<StockInfoDto[]> monoStock = this.webClient
+                .method(HttpMethod.GET)
+                .uri("/stocks")
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .retrieve()
+                .bodyToMono(StockInfoDto[].class);
+
+        StockInfoDto[] stockInfoDtos =  monoStock.block();
+
+
+        return stockInfoDtos;
+    }
+
 
     public void UpdateStockbyPrice(StocksDto stocksDto, String token) {
         Mono<StocksDto> monoStockPrice = this.webClient

@@ -10,19 +10,15 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Repository
 public interface UserStockBalanceRepository extends JpaRepository <UserStockBalance, UserStockBalanceId>{
     UserStockBalance findAllById(UserStockBalanceId userStockBalanceId);
 
-
-    // se existirem na tabela, fazer o update na tabela
-    /*@Modifying
-    @Query(value = "UPDATE  user_stock_balances set volume = :volume where id = :id_user and id_stock = :id_stock", nativeQuery = true)
-    Integer findByIdUpdateBalance(@Param("id_user"), Long id_user,
-                                    @Param("volume") Long volume);
-*/
+    @Query(value = "SELECT * from user_stock_balances where id_user = :id_user", nativeQuery = true)
+    List<UserStockBalance> findAllByIdUser(@Param("id_user") Long id_user);
 
 
 }
