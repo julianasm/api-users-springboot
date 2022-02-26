@@ -1,4 +1,4 @@
-package com.example.sample.serviceOrder;
+package com.example.sample.dto;
 
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.Users;

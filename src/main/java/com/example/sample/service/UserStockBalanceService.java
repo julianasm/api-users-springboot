@@ -1,4 +1,4 @@
-package com.example.sample.serviceStockBalance;
+package com.example.sample.service;
 
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;

@@ -1,4 +1,4 @@
-package com.example.sample.serviceOrder;
+package com.example.sample.dto;
 
 import lombok.Getter;
 import lombok.Setter;

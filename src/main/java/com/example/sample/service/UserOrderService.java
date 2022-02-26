@@ -1,8 +1,9 @@
-package com.example.sample.serviceOrder;
+package com.example.sample.service;
 
 
 import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.service.StockService;
+import com.example.sample.dto.UserOrderDTO;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;
@@ -11,8 +12,6 @@ import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,6 +68,12 @@ public class UserOrderService {
             remainingVolumeSell = remainingVolumeSell - volumeSell;
             userOrderBuy.setRemaining_volume(remainingVolumeBuy);
             userOrderSell.setRemaining_volume(remainingVolumeSell);
+            if (remainingVolumeSell == 0){
+                userOrderSell.setStatus(0);
+            }
+            if (remainingVolumeBuy == 0){
+                userOrderBuy.setStatus(0);
+            }
             userOrdersRepository.save(userOrderBuy);
             userOrdersRepository.save(userOrderSell);
         }
@@ -77,16 +82,12 @@ public class UserOrderService {
             remainingVolumeBuy = remainingVolumeBuy - volumeBuy;
             userOrderBuy.setRemaining_volume(remainingVolumeBuy);
             userOrderSell.setRemaining_volume(remainingVolumeSell);
-            userOrdersRepository.save(userOrderBuy);
-            userOrdersRepository.save(userOrderSell);
-        }
-        if (volumeSell == volumeBuy){
-            remainingVolumeSell = Long.valueOf(0);
-            remainingVolumeBuy = Long.valueOf(0);
-            userOrderBuy.setRemaining_volume(remainingVolumeBuy);
-            userOrderSell.setRemaining_volume(remainingVolumeSell);
-            userOrderBuy.setStatus(0);
-            userOrderSell.setStatus(0);
+            if (remainingVolumeSell == 0){
+                userOrderSell.setStatus(0);
+            }
+            if (remainingVolumeBuy == 0){
+                userOrderBuy.setStatus(0);
+            }
             userOrdersRepository.save(userOrderBuy);
             userOrdersRepository.save(userOrderSell);
         }

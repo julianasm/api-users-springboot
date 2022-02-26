@@ -2,17 +2,11 @@ package com.example.sample.resources;
 
 
 import com.example.sample.models.UserStockBalance;
-import com.example.sample.models.UserStockBalanceId;
-import com.example.sample.models.Users;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
-import com.example.sample.serviceStockBalance.UserStockBalanceDTO;
-import com.example.sample.serviceStockBalance.UserStockBalanceService;
-import com.example.sample.serviceUsers.UsersDTO;
+import com.example.sample.service.UserStockBalanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,29 +1,20 @@
 package com.example.sample.resources;
 
-import com.example.sample.consumer.DTO.StocksDto;
 import com.example.sample.consumer.controller.StockController;
 import com.example.sample.consumer.service.StockService;
 import com.example.sample.models.UserOrders;
-import com.example.sample.models.UserStockBalance;
-import com.example.sample.models.UserStockBalanceId;
-import com.example.sample.models.Users;
 
 import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
-import com.example.sample.serviceOrder.UpdateOrderDto;
-import com.example.sample.serviceOrder.UserOrderDTO;
-import com.example.sample.serviceOrder.UserOrderService;
-import com.example.sample.serviceUsers.UsersDTO;
+import com.example.sample.dto.UpdateOrderDto;
+import com.example.sample.dto.UserOrderDTO;
+import com.example.sample.service.UserOrderService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.SelectBeforeUpdate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController

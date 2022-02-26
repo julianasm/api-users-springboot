@@ -1,8 +1,8 @@
-package com.example.sample.serviceUsers;
+package com.example.sample.service;
 
-import com.example.sample.models.UserOrders;
+import com.example.sample.dto.SaveUserDto;
+import com.example.sample.dto.UsersDTO;
 import com.example.sample.models.Users;
-import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
