@@ -11,6 +11,7 @@ import com.example.sample.dto.UpdateOrderDto;
 import com.example.sample.dto.UserOrderDTO;
 import com.example.sample.service.UserOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,14 +37,14 @@ public class UserOrdersResources {
 
     @CrossOrigin
     @GetMapping("/orders")
-    public List<UserOrders> listaPedidos(){
-        return userOrdersRepository.findAll();
+    public Page<UserOrders> listaPedidos(@RequestParam int pageSize, @RequestParam int pageNumber){
+        return userOrderService.findOrdersPage(pageSize, pageNumber);
     }
 
     @CrossOrigin
     @GetMapping("/orders/{id}")
-    public List<UserOrders> listaOrdemPorId(@PathVariable Long id){
-        return userOrdersRepository.findByIdUser(id);
+    public Page<UserOrders> listaOrdemPorId(@PathVariable Long id, @RequestParam int pageNumber, int pageSize){
+        return userOrderService.findOrdersPageById(id, pageSize, pageNumber);
     }
 
     @CrossOrigin
@@ -56,8 +57,6 @@ public class UserOrdersResources {
             return ResponseEntity.badRequest().build();
         }
     }
-
-
 
     @CrossOrigin
     @PostMapping("/new_order")

@@ -70,7 +70,7 @@ public class StockService {
 
     public void UpdateStockbyPrice(StocksDto stocksDto, String token) {
         Mono<StocksDto> monoStockPrice = this.webClient
-                .method(HttpMethod.PUT)
+                .method(HttpMethod.POST)
                 .uri("/update_stocks")
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .body(Mono.just(stocksDto), StocksDto.class)

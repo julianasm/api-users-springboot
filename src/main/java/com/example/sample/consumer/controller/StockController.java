@@ -49,7 +49,7 @@ public class StockController {
 
 
     @CrossOrigin
-    @PutMapping("/updateStock")
+    @PostMapping ("/updateStock")
     public ResponseEntity<StockId> updateStockbyId(@RequestHeader("Authorization") String token){
         return null;
 

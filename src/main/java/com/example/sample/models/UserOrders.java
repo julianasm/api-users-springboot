@@ -1,5 +1,6 @@
 package com.example.sample.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@AllArgsConstructor
 @Entity
 @Table(name="user_orders")
 public class UserOrders implements Serializable{
@@ -64,6 +66,4 @@ public class UserOrders implements Serializable{
         this.created_on = Timestamp.valueOf(LocalDateTime.now());
         this.updated_on = Timestamp.valueOf(LocalDateTime.now());
     }
-
-
 }

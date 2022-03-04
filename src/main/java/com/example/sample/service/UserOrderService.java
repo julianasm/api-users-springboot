@@ -12,6 +12,9 @@ import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -224,5 +227,15 @@ public class UserOrderService {
             return userOrderDTO;
         }
         return userOrderDTO;
+    }
+
+    public Page<UserOrders> findOrdersPage(int pageSize, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return userOrdersRepository.findAll(pageable);
+    }
+
+    public Page<UserOrders> findOrdersPageById(Long id, int pageSize, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return userOrdersRepository.findByIdPageable(pageable, id);
     }
 }

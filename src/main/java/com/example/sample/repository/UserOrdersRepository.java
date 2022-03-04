@@ -1,6 +1,8 @@
 package com.example.sample.repository;
 
 import com.example.sample.models.UserOrders;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,12 +26,13 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
                                                       @Param("id_user") Long id_user);
 
     @Query(value = "SELECT * from user_orders uo where id_user = :id_user", nativeQuery = true)
-    List<UserOrders> findByIdUser(@Param("id_user") Long id);
+    Page<UserOrders> findByIdPageable(Pageable pageable, @Param("id_user") Long id);
 
     @Modifying
     @Query(value = "UPDATE  user_orders set remaining_volume = :remaining_volume where id = :id", nativeQuery = true)
     Integer findByIdOrder(@Param("remaining_volume") Long remaining_volume,
                           @Param("id") Long id);
+
 
     @Modifying
     @Query(value = "update user_orders set status = 0 where id = :id", nativeQuery = true)
