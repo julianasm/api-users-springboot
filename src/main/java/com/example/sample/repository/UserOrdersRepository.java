@@ -20,7 +20,7 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
    /* @Query(value = "SELECT * FROM user_orders WHERE type = ?1 and id_stock = ?2 and status = 1", nativeQuery = true)
     List<UserOrders> findByTypeStock(Integer type, Long id_stock);*/
 
-    @Query(value = "SELECT * FROM user_orders uo where uo.id_stock = :id_stock  and uo.type <> :type and uo.id_user <> :id_user and status = 1 order by created_on  fetch first 1 row only", nativeQuery = true)
+    @Query(value = "SELECT * FROM user_orders uo where uo.id_stock = :id_stock  and uo.type <> :type and uo.id_user <> :id_user and status = 1 order by created_on", nativeQuery = true)
     List<UserOrders> findByStockAndTypeOrderAndIdUser(@Param("id_stock") Long id_stock,
                                                       @Param("type") Integer type,
                                                       @Param("id_user") Long id_user);

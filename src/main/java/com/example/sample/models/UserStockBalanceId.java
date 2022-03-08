@@ -1,6 +1,7 @@
 package com.example.sample.models;
 
 import com.example.sample.models.Users;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
