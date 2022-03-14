@@ -20,7 +20,7 @@ public class UserStockBalanceService {
         return userStockBalanceRepository.save(userStockBalance);
     }
 
-    public Optional<UserStockBalance> findById(Users users, Long id_stock){
-        return userStockBalanceRepository.findById(new UserStockBalanceId(users, id_stock));
+    public Optional<UserStockBalance> findById(Users users, Long idStock){
+        return userStockBalanceRepository.findById(new UserStockBalanceId(users, idStock));
     }
 }

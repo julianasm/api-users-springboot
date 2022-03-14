@@ -1,17 +1,14 @@
 package com.example.sample.resources;
 
 import com.example.sample.models.Users;
-import com.example.sample.repository.UsersRepository;
 import com.example.sample.dto.SaveUserDto;
 import com.example.sample.dto.UsersDTO;
 import com.example.sample.service.UsersService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController

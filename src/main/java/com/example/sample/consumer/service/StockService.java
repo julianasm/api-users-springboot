@@ -1,8 +1,7 @@
 package com.example.sample.consumer.service;
 
-import com.example.sample.consumer.DTO.StockInfoDto;
-import com.example.sample.consumer.DTO.StocksDto;
-import com.example.sample.consumer.model.StockId;
+import com.example.sample.consumer.dto.StockInfoDto;
+import com.example.sample.consumer.dto.StocksDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,7 +17,6 @@ public class StockService {
     @Autowired
     private WebClient webClient;
 
-    StocksDto stocksDto;
 
     public StocksDto stockbyId(@PathVariable Long id, @RequestHeader("Authorization") String token) {
 
@@ -29,10 +27,8 @@ public class StockService {
                 .retrieve()
                 .bodyToMono(StocksDto.class);
 
-        StocksDto stocksDto =  monoStock.block();
+        return monoStock.block();
 
-
-        return stocksDto;
     }
 
     public StockInfoDto stockInfoById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
@@ -44,10 +40,9 @@ public class StockService {
                 .retrieve()
                 .bodyToMono(StockInfoDto.class);
 
-        StockInfoDto stockInfoDto =  monoStock.block();
+        return monoStock.block();
 
 
-        return stockInfoDto;
     }
 
 
@@ -61,14 +56,12 @@ public class StockService {
                 .retrieve()
                 .bodyToMono(StockInfoDto[].class);
 
-        StockInfoDto[] stockInfoDtos =  monoStock.block();
+        return monoStock.block();
 
-
-        return stockInfoDtos;
     }
 
 
-    public void UpdateStockbyPrice(StocksDto stocksDto, String token) {
+    public void updateStockbyPrice(StocksDto stocksDto, String token) {
         Mono<StocksDto> monoStockPrice = this.webClient
                 .method(HttpMethod.POST)
                 .uri("/update_stocks")

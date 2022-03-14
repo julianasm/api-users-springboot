@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -51,7 +50,6 @@ public class UserOrdersResources {
     @PostMapping("/order-update/{status}")
     public ResponseEntity<UserOrders> updateOrder(@RequestBody UpdateOrderDto dto, @PathVariable("status") Integer status, @RequestHeader("Authorization") String token) throws Exception {
         try {
-            System.out.println("chegou aqui");
             return ResponseEntity.ok().body(userOrderService.updateStatus(dto.getId(), status));
         } catch (Exception e){
             return ResponseEntity.badRequest().build();

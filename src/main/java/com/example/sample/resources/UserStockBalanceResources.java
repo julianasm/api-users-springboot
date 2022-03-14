@@ -33,8 +33,7 @@ public class UserStockBalanceResources {
     @CrossOrigin
     @GetMapping("/user_stock/{id}")
     public List<UserStockBalance> listaUserStock(@PathVariable Long id) {
-        List<UserStockBalance> userStockBlance = userStockBalanceRepository.findAllByIdUser(id);
-        return userStockBlance;
+        return userStockBalanceRepository.findAllByIdUser(id);
     }
 
 

@@ -3,10 +3,7 @@ package com.example.sample.models;
 import com.example.sample.models.Users;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,14 +13,15 @@ public class UserStockBalanceId implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_user")
     private Users users;
-    private Long id_stock;
+    @Column(name="id_stock")
+    private Long idStock;
 
     public UserStockBalanceId() {
     }
 
     public UserStockBalanceId(Users users, Long id_stock) {
         this.users = users;
-        this.id_stock = id_stock;
+        this.idStock = id_stock;
     }
 
     public Users getUsers() {
@@ -35,11 +33,11 @@ public class UserStockBalanceId implements Serializable {
     }
 
     public Long getId_stock() {
-        return id_stock;
+        return idStock;
     }
 
     public void setId_stock(Long id_stock) {
-        this.id_stock = id_stock;
+        this.idStock = id_stock;
     }
 
     @Override
@@ -47,11 +45,11 @@ public class UserStockBalanceId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserStockBalanceId that = (UserStockBalanceId) o;
-        return Objects.equals(users, that.users) && Objects.equals(id_stock, that.id_stock);
+        return Objects.equals(users, that.users) && Objects.equals(idStock, that.idStock);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(users, id_stock);
+        return Objects.hash(users, idStock);
     }
 }

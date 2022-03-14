@@ -2,7 +2,6 @@ package com.example.sample.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -28,11 +27,14 @@ public class UserOrders implements Serializable{
     @JoinColumn(name="id_user")
     private Users users;
 
-    private Long id_stock;
+    @Column(name="id_stock")
+    private Long idStock;
 
-    private String stock_symbol;
+    @Column(name="stock_symbol")
+    private String stockSymbol;
 
-    private String stock_name;
+    @Column(name="stock_name")
+    private String stockName;
 
     private Long volume;
 
@@ -42,28 +44,31 @@ public class UserOrders implements Serializable{
 
     private Double price;
 
-    private Timestamp created_on;
+    @Column(name="created_on")
+    private Timestamp createdOn;
 
-    private Timestamp updated_on;
+    @Column(name="updated_on")
+    private Timestamp updatedOn;
 
-    private Long remaining_volume;
+    @Column(name="remaining_volume")
+    private Long remainingVolume;
 
-    public UserOrders(Users users, Long id_stock, String stock_symbol, String stock_name, Long volume, Integer type, Integer status, Double price, Long remaining_volume) {
+    public UserOrders(Users users, Long idStock, String stockSymbol, String stockName, Long volume, Integer type, Integer status, Double price, Long remainingVolume) {
         this.users = users;
-        this.id_stock = id_stock;
-        this.stock_symbol = stock_symbol;
-        this.stock_name = stock_name;
+        this.idStock = idStock;
+        this.stockSymbol = stockSymbol;
+        this.stockName = stockName;
         this.volume = volume;
         this.price = price;
         this.type = type;
         this.status = status;
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
-        this.remaining_volume = remaining_volume;
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
+        this.remainingVolume = remainingVolume;
     }
 
     public UserOrders(){
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 }

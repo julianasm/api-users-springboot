@@ -1,9 +1,10 @@
 package com.example.sample.service;
 
 
-import com.example.sample.consumer.DTO.StocksDto;
+import com.example.sample.consumer.dto.StocksDto;
 import com.example.sample.consumer.service.StockService;
 import com.example.sample.dto.UserOrderDTO;
+import com.example.sample.handleError.NotFoundException;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;
@@ -32,34 +33,15 @@ public class UserOrderService {
 
     private final UserStockBalanceRepository userStockBalanceRepository;
 
-    public void returnDollarBalance(Double price, Long volume, Long id, Double old_balance, Double match_cost) {
-        var order_cost = price * volume;
-        var return_value = order_cost - match_cost;
-        if (return_value > 0){
-            Users users = usersRepository.findById(id).orElseThrow();
-            users.setDollar_balance((old_balance + return_value));
-        }
-    }
 
-    public void returnStockBalance(Users users, Long id_stock, Long old_balance, Long match_cost, Long order_cost ) {
-        var return_value = order_cost - match_cost;
-        if (return_value > 0){
-            UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, id_stock)).orElseThrow();
-            var newStockVolume = userStockBalance.getVolume() + return_value;
-            userStockBalance.setVolume(newStockVolume);
-        }
-    }
-
-
-    public UserOrders updateStatus(Long id, Integer status) throws Exception {
+    public UserOrders updateStatus(Long id, Integer status) throws NotFoundException {
         Optional<UserOrders> userOrders = userOrdersRepository.findById(id);
         if (userOrders.isPresent()){
             userOrders.get().setStatus(status);
             userOrdersRepository.save(userOrders.get());
             return userOrders.get();
         } else {
-            System.out.println("erro");
-            throw new Exception("ORDER_NOT_FOUND");
+            throw new NotFoundException("ORDER_NOT_FOUND");
         }
     }
 
@@ -67,28 +49,27 @@ public class UserOrderService {
     public void checkRemainingVolume (Long idBuy, Long idSell, Long volumeBuy, Long volumeSell) {
         UserOrders userOrderBuy = userOrdersRepository.findById(idBuy).orElseThrow();
         UserOrders userOrderSell = userOrdersRepository.findById(idSell).orElseThrow();
-        var remainingVolumeBuy = userOrderBuy.getRemaining_volume();
-        var remainingVolumeSell = userOrderSell.getRemaining_volume();
+        var remainingVolumeBuy = userOrderBuy.getRemainingVolume();
+        var remainingVolumeSell = userOrderSell.getRemainingVolume();
         if (volumeBuy > volumeSell){
             remainingVolumeBuy = remainingVolumeBuy - volumeSell;
             remainingVolumeSell = remainingVolumeSell - volumeSell;
-            userOrderBuy.setRemaining_volume(remainingVolumeBuy);
-            userOrderSell.setRemaining_volume(remainingVolumeSell);
+            userOrderBuy.setRemainingVolume(remainingVolumeBuy);
+            userOrderSell.setRemainingVolume(remainingVolumeSell);
             if (remainingVolumeSell == 0){
                 userOrderSell.setStatus(0);
             }
             if (remainingVolumeBuy == 0){
                 userOrderBuy.setStatus(0);
             }
-            System.out.println(remainingVolumeBuy);
             userOrdersRepository.save(userOrderBuy);
             userOrdersRepository.save(userOrderSell);
         }
         if (volumeSell > volumeBuy){
             remainingVolumeSell = remainingVolumeSell - volumeBuy;
             remainingVolumeBuy = remainingVolumeBuy - volumeBuy;
-            userOrderBuy.setRemaining_volume(remainingVolumeBuy);
-            userOrderSell.setRemaining_volume(remainingVolumeSell);
+            userOrderBuy.setRemainingVolume(remainingVolumeBuy);
+            userOrderSell.setRemainingVolume(remainingVolumeSell);
             if (remainingVolumeSell == 0){
                 userOrderSell.setStatus(0);
             }
@@ -100,63 +81,68 @@ public class UserOrderService {
         }
     }
 
-    public void updateStockPrice(Long id_stock, String token){
-        Double bid_min = userOrdersRepository.findByIdStockMinPriceBid(id_stock);
-        Double bid_max = userOrdersRepository.findByIdStockMaxPriceBid(id_stock);
-        Double ask_min = userOrdersRepository.findByIdStockMinPriceAsk(id_stock);
-        Double ask_max = userOrdersRepository.findByIdStockMaxPriceAsk(id_stock);
+    public void updateStockPrice(Long idStock, String token){
+        Double bidMin = userOrdersRepository.findByIdStockMinPriceBid(idStock);
+        Double bidMax = userOrdersRepository.findByIdStockMaxPriceBid(idStock);
+        Double askMin = userOrdersRepository.findByIdStockMinPriceAsk(idStock);
+        Double askMax = userOrdersRepository.findByIdStockMaxPriceAsk(idStock);
 
-        StocksDto stocksDto = new StocksDto(id_stock, bid_min, bid_max, ask_min, ask_max);
+        StocksDto stocksDto = new StocksDto(idStock, bidMin, bidMax, askMin, askMax);
 
-        stockService.UpdateStockbyPrice(stocksDto, token);
+        stockService.updateStockbyPrice(stocksDto, token);
 
     }
     public void checkReturnBallance(Long idUser, Long volumeBuy, Double priceBuy, Double priceSell){
         Users users = usersRepository.findById(idUser).orElseThrow();
-        var dollarBalance = users.getDollar_balance();
+        var dollarBalance = users.getDollarBalance();
         if ((priceBuy - priceSell) > 0){
             var returnValue = (priceBuy - priceSell) * volumeBuy;
-            users.setDollar_balance((dollarBalance + returnValue));
+            users.setDollarBalance((dollarBalance + returnValue));
             usersRepository.save(users);
         }
     }
 
-    public double updateDollarBalance(Double price, Long volume, Long id, int type, Double final_balance) {
+    public void updateDollarBalance(Double price, Long volume, Long id, int type, Double finalBalance) {
         if (type == 1) {
-            final_balance = final_balance - (price * volume);
-            usersRepository.findbyIdSetDollarBalance(id, final_balance);
+            finalBalance = finalBalance - (price * volume);
+            usersRepository.findbyIdSetDollarBalance(id, finalBalance);
         } else if (type == 2) {
-            final_balance = final_balance + (price * volume);
-            usersRepository.findbyIdSetDollarBalance(id, final_balance);
+            finalBalance = finalBalance + (price * volume);
+            usersRepository.findbyIdSetDollarBalance(id, finalBalance);
         }
-        return final_balance;
     }
 
-    public void updateStockBalance(Users user_id, Long stock_id, String stock_symbol, String stock_name, Long volume_buy, Long volume_sell, int type) {
+    public void updateStockBalance(Users userId, Long stockId, String stockSymbol, String stockName, Long volumeBuy, Long volumeSell, int type) {
         if (type == 2){
-            if (volume_sell > volume_buy){;
-                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
-                var volume = userStockBalance.getVolume() - volume_buy;
+            if (volumeSell > volumeBuy){
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(userId, stockId)).orElseThrow();
+                var volume = userStockBalance.getVolume() - volumeBuy;
                 userStockBalance.setVolume(volume);
                 userStockBalanceRepository.save(userStockBalance);
-            } else if (volume_sell <= volume_buy){
-                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElseThrow();
-                var volume = userStockBalance.getVolume() - volume_sell;
+            } else {
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(userId, stockId)).orElseThrow();
+                var volume = userStockBalance.getVolume() - volumeSell;
                 userStockBalance.setVolume(volume);
                 userStockBalanceRepository.save(userStockBalance);
             }
         }
         if (type == 1){
-            if (volume_buy > volume_sell){
-                var balance = volume_buy - volume_sell;
-                userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
-                        userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, balance)));
-            } else if (volume_buy <= volume_sell){
+            if (volumeBuy > volumeSell){
+                var balance = volumeBuy - volumeSell;
+                Optional<UserStockBalance> userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(userId, stockId));
+                if(userStockBalance.isPresent()){
+                    balance = userStockBalance.get().getVolume() + balance;
+                    userStockBalance.get().setVolume(balance);
+                    userStockBalanceRepository.save(userStockBalance.get());
+                } else {
+                    userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(userId, stockId), stockSymbol, stockName, balance));
+                }
+            } else {
                 int initializer = 0;
                 var balance = Long.valueOf(initializer);
-                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(user_id, stock_id)).orElse(
-                        userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(user_id, stock_id), stock_symbol, stock_name, balance)));
-                balance = volume_buy + userStockBalance.getVolume();
+                UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(userId, stockId)).orElse(
+                        userStockBalanceRepository.save(new UserStockBalance(new UserStockBalanceId(userId, stockId), stockSymbol, stockName, balance)));
+                balance = volumeBuy + userStockBalance.getVolume();
                 userStockBalance.setVolume(balance);
                 userStockBalanceRepository.save(userStockBalance);
             }
@@ -165,87 +151,82 @@ public class UserOrderService {
     }
 
 
-    public UserOrderDTO salvar(UserOrderDTO userOrderDTO, String token) {
-        System.out.println("chegou pra salvar a ordem");
+    public UserOrderDTO saveBuy(UserOrderDTO userOrderDTO, String token){
         Users users = usersRepository.findById(userOrderDTO.getId_user()).orElseThrow();
-        if (userOrderDTO.getType() == 1) {
-            var total_amount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
-            if (total_amount <= users.getDollar_balance()) {
-                UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
+        var totalAmount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
+        if (totalAmount <= users.getDollarBalance()) {
+            UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
 
-                // retem o valor do usuario mesmo antes da ordem fechar
-                var balance = users.getDollar_balance() - total_amount;
-                System.out.println(balance);
-                users.setDollar_balance(balance);
-                usersRepository.save(users);
+            // retem o valor do usuario mesmo antes da ordem fechar
+            var balance = users.getDollarBalance() - totalAmount;
+            users.setDollarBalance(balance);
+            usersRepository.save(users);
 
-                // atualiza o bid min/bid max
-                updateStockPrice(userOrderDTO.getId_stock(), token);
+            // atualiza o bid min/bid max
+            updateStockPrice(userOrderDTO.getId_stock(), token);
 
-                // busca uma ordem equivalente
-                List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
-                        userOrderDTO.getType(), userOrderDTO.getId_user());
+            // busca uma ordem equivalente
+            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
+                    userOrderDTO.getType(), userOrderDTO.getId_user());
 
-                for (UserOrders orderSell : userOrders1) {
+            for (UserOrders orderSell : userOrders1) {
 
-                    //compara o volume da ordem do tipo compra com o volume da ordem do tipo compra
-                    if (userOrderDTO.getType() == 1) {
-                        // se o valor da ordem do tipo compra for maior ou igual
-                        if ((userOrderDTO.getPrice() >= orderSell.getPrice())) {
-                            checkRemainingVolume(orderBuy.getId(), orderSell.getId(), orderBuy.getVolume(), orderSell.getVolume());
-                            //pega o saldo
-                            double finalBalanceOrder = orderSell.getUsers().getDollar_balance();
-
-                            // devolve os saldo restante ao comprador
-                            checkReturnBallance(userOrderDTO.getId_user(), userOrderDTO.getVolume(), userOrderDTO.getPrice(), orderSell.getPrice());
-
-                            //atualiza o dollar balance de quem vendeu
-                            updateDollarBalance(orderSell.getPrice(), orderSell.getVolume(), orderSell.getUsers().getId(), orderSell.getType(), finalBalanceOrder);
-                            //atualiza o stock balance de quem comprou
-                            updateStockBalance(users, orderBuy.getId_stock(), orderBuy.getStock_symbol(), orderBuy.getStock_name(), orderBuy.getVolume(), orderSell.getVolume(), orderBuy.getType());
-                        } else {
-                            System.out.println("nenhuma ordem compativel no momento!");
-                        }
-                    }
-
+                //compara o volume da ordem do tipo compra com o volume da ordem do tipo compra
+                // se o valor da ordem do tipo compra for maior ou igual
+                if ((userOrderDTO.getPrice() >= orderSell.getPrice())) {
+                    checkRemainingVolume(orderBuy.getId(), orderSell.getId(), orderBuy.getVolume(), orderSell.getVolume());
+                    //pega o saldo
+                    double finalBalanceOrder = orderSell.getUsers().getDollarBalance();
+                    //atualiza o dollar balance de quem vendeu
+                    updateDollarBalance(orderSell.getPrice(), orderSell.getVolume(), orderSell.getUsers().getId(), orderSell.getType(), finalBalanceOrder);
+                    //atualiza o stock balance de quem comprou
+                    updateStockBalance(users, orderBuy.getIdStock(), orderBuy.getStockSymbol(), orderBuy.getStockName(), orderBuy.getVolume(), orderSell.getVolume(), orderBuy.getType());
                 }
-                return userOrderDTO;
+
             }
-        } else if (userOrderDTO.getType() == 2) {
-            UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, userOrderDTO.getId_stock())).orElseThrow();
-            if (userOrderDTO.getVolume() <= userStockBalance.getVolume()) {
-
-                // salva a ordem
-                UserOrders orderSell = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
-
-                // retem o dinheiro
-                var volume = userStockBalance.getVolume() - userOrderDTO.getVolume();
-                userStockBalance.setVolume(volume);
-                userStockBalanceRepository.save(userStockBalance);
-
-                // atualiza o bid ask/ask max
-                updateStockPrice(userOrderDTO.getId_stock(), token);
-
-                // encontra a ordem compativel
-                List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
-                        userOrderDTO.getType(), userOrderDTO.getId_user());
-
-                for (UserOrders orderBuy : userOrders1) {
-                    System.out.println(orderBuy.getId());
-                    if (orderSell.getPrice() <= orderBuy.getPrice()) {
-                        checkRemainingVolume(orderBuy.getId(), orderSell.getId(), orderBuy.getVolume(), orderSell.getVolume());
-                        double final_balance1 = orderSell.getUsers().getDollar_balance();
-                        updateDollarBalance(userOrderDTO.getPrice(), userOrderDTO.getVolume(), userOrderDTO.getId_user(), userOrderDTO.getType(), final_balance1);
-                        updateStockBalance(orderBuy.getUsers(), orderBuy.getId_stock(), orderBuy.getStock_symbol(), orderBuy.getStock_name(), orderBuy.getVolume(), orderSell.getVolume(), orderBuy.getType());
-                    } else {
-                        System.out.println("nenhuma ordem compativel no momento!");
-                    }
-
-                }
-                return userOrderDTO;
-            }
-        } else {
             return userOrderDTO;
+        }
+        return userOrderDTO;
+    }
+
+    public UserOrderDTO saveSell(UserOrderDTO userOrderDTO, String token){
+        Users users = usersRepository.findById(userOrderDTO.getId_user()).orElseThrow();
+        UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, userOrderDTO.getId_stock())).orElseThrow();
+        if (userOrderDTO.getVolume() <= userStockBalance.getVolume()) {
+
+            // salva a ordem
+            UserOrders orderSell = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
+
+            // retem o dinheiro
+            var volume = userStockBalance.getVolume() - userOrderDTO.getVolume();
+            userStockBalance.setVolume(volume);
+            userStockBalanceRepository.save(userStockBalance);
+
+            // atualiza o bid ask/ask max
+            updateStockPrice(userOrderDTO.getId_stock(), token);
+
+            // encontra a ordem compativel
+            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
+                    userOrderDTO.getType(), userOrderDTO.getId_user());
+
+            for (UserOrders orderBuy : userOrders1) {
+                if (orderSell.getPrice() <= orderBuy.getPrice()) {
+                    checkRemainingVolume(orderBuy.getId(), orderSell.getId(), orderBuy.getVolume(), orderSell.getVolume());
+                    double finalBalance1 = orderSell.getUsers().getDollarBalance();
+                    updateDollarBalance(userOrderDTO.getPrice(), userOrderDTO.getVolume(), userOrderDTO.getId_user(), userOrderDTO.getType(), finalBalance1);
+                    updateStockBalance(orderBuy.getUsers(), orderBuy.getIdStock(), orderBuy.getStockSymbol(), orderBuy.getStockName(), orderBuy.getVolume(), orderSell.getVolume(), orderBuy.getType());
+                }
+            }
+            return userOrderDTO;
+        }
+        return userOrderDTO;
+    }
+
+    public UserOrderDTO salvar(UserOrderDTO userOrderDTO, String token) {
+        if (userOrderDTO.getType() == 1) {
+            saveBuy(userOrderDTO, token);
+        } else if (userOrderDTO.getType() == 2) {
+            saveSell(userOrderDTO, token);
         }
         return userOrderDTO;
     }
