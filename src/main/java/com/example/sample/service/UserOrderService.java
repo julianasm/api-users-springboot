@@ -166,6 +166,7 @@ public class UserOrderService {
 
 
     public UserOrderDTO salvar(UserOrderDTO userOrderDTO, String token) {
+        System.out.println("chegou pra salvar a ordem");
         Users users = usersRepository.findById(userOrderDTO.getId_user()).orElseThrow();
         if (userOrderDTO.getType() == 1) {
             var total_amount = userOrderDTO.getPrice() * userOrderDTO.getVolume();

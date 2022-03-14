@@ -19,29 +19,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UsersResources{
 
-    @Autowired
-    UsersRepository usersRepository;
 
     private final UsersService usersService;
 
+    @CrossOrigin
     @GetMapping("/users")
     public List<Users> listaUsers(){
-        return usersRepository.findAll();
+        return usersService.listAll();
+    }
+
+    @CrossOrigin
+    @GetMapping("/users-id")
+    public List<UsersDTO> listUsersId() throws InterruptedException {
+
+        Thread.sleep(3000);
+
+        return usersService.listAllDto();
     }
 
     @CrossOrigin
     @GetMapping("/users/{id}")
-    public Optional<Users> getUser(@PathVariable("id") Long id) {
-        return usersRepository.findById(id);
+    public ResponseEntity<Users> getUser(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok().body(usersService.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
-//    @CrossOrigin
-//    @PostMapping("/newUserStock")
-//    public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
-//        Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-//        UserStockBalance userStockBalance = userStockBalanceService.salvar(dto.transformaParaObjeto(users));
-//        return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
-//    }
 
     @CrossOrigin
     @GetMapping("/users/username/{username}")
