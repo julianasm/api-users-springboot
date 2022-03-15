@@ -56,7 +56,6 @@ public class UserOrdersResources {
             return ResponseEntity.badRequest().build();
         }
     }
-
     @CrossOrigin
     @PostMapping("/new_order")
     public ResponseEntity<UserOrderDTO> salvar(@RequestBody UserOrderDTO dto, @RequestHeader("Authorization") String token) {
