@@ -2,7 +2,7 @@ package com.example.sample.resources;
 
 import com.example.sample.consumer.controller.StockController;
 import com.example.sample.consumer.service.StockService;
-import com.example.sample.handleerror.NotUpdatedException;
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.UserOrders;
 
 import com.example.sample.repository.UserOrdersRepository;
@@ -49,7 +49,7 @@ public class UserOrdersResources {
 
     @CrossOrigin
     @PostMapping("/order-update/{status}")
-    public ResponseEntity<UserOrders> updateOrder(@RequestBody UpdateOrderDto dto, @PathVariable("status") Integer status, @RequestHeader("Authorization") String token) throws NotUpdatedException {
+    public ResponseEntity<UserOrders> updateOrder(@RequestBody UpdateOrderDto dto, @PathVariable("status") Integer status, @RequestHeader("Authorization") String token) throws NotFoundException {
         try {
             return ResponseEntity.ok().body(userOrderService.updateStatus(dto.getId(), status));
         } catch (Exception e){

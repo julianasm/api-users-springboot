@@ -52,7 +52,7 @@ public class UsersResources{
     public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws NotFoundException {
         try {
             return ResponseEntity.ok().body(usersService.findByUsername(username));
-        } catch ( NotFoundException e) {
+        } catch ( Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
