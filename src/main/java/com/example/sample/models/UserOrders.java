@@ -2,17 +2,18 @@ package com.example.sample.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name="user_orders")
 public class UserOrders implements Serializable{
 
@@ -53,22 +54,4 @@ public class UserOrders implements Serializable{
     @Column(name="remaining_volume")
     private Long remainingVolume;
 
-    public UserOrders(Users users, Long idStock, String stockSymbol, String stockName, Long volume, Integer type, Integer status, Double price, Long remainingVolume) {
-        this.users = users;
-        this.idStock = idStock;
-        this.stockSymbol = stockSymbol;
-        this.stockName = stockName;
-        this.volume = volume;
-        this.price = price;
-        this.type = type;
-        this.status = status;
-        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
-        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
-        this.remainingVolume = remainingVolume;
-    }
-
-    public UserOrders(){
-        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
-        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
-    }
 }

@@ -46,8 +46,8 @@ public class UserStockBalanceResources {
     @CrossOrigin
     @PostMapping("/new-user-stock")
     public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
-        Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-        UserStockBalance userStockBalance = userStockBalanceService.findById(users, dto.getId_stock()).orElse(userStockBalanceService.salvar(dto.transformaParaObjeto(users)));
+        Users users = usersRepository.findById(dto.getIdUser()).orElseThrow();
+        UserStockBalance userStockBalance = userStockBalanceService.findById(users, dto.getIdStock()).orElse(userStockBalanceService.salvar(dto.transformaParaObjeto(users)));
         return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
     }
 

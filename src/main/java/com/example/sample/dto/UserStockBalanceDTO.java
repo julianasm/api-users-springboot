@@ -1,7 +1,6 @@
 package com.example.sample.dto;
 
 
-import com.example.sample.models.UserOrders;
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;
 import com.example.sample.models.Users;
@@ -11,21 +10,21 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserStockBalanceDTO {
-    private Long id_user;
+    private Long idUser;
 
-    private Long id_stock;
+    private Long idStock;
 
-    private String stock_symbol;
+    private String stockSymbol;
 
-    private String stock_name;
+    private String stockName;
 
     private Long volume;
 
-    public UserStockBalanceDTO(Long id_user, Long id_stock, String stock_symbol, String stock_name, Long volume) {
-        this.id_user = id_user;
-        this.id_stock = id_stock;
-        this.stock_symbol = stock_symbol;
-        this.stock_name = stock_name;
+    public UserStockBalanceDTO(Long idUser, Long idStock, String stockSymbol, String stockName, Long volume) {
+        this.idUser = idUser;
+        this.idStock = idStock;
+        this.stockSymbol = stockSymbol;
+        this.stockName = stockName;
         this.volume = volume;
     }
 
@@ -33,9 +32,9 @@ public class UserStockBalanceDTO {
     }
 
     public UserStockBalance transformaParaObjeto(Users users){
-        return new UserStockBalance( new UserStockBalanceId(users, id_stock),
-                stock_symbol,
-                stock_name,
+        return new UserStockBalance( new UserStockBalanceId(users, idStock),
+                stockSymbol,
+                stockName,
                 volume);
     }
 

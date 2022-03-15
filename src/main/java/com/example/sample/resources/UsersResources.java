@@ -1,5 +1,6 @@
 package com.example.sample.resources;
 
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.Users;
 import com.example.sample.dto.SaveUserDto;
 import com.example.sample.dto.UsersDTO;
@@ -48,10 +49,10 @@ public class UsersResources{
 
     @CrossOrigin
     @GetMapping("/users/username/{username}")
-    public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws Exception {
+    public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws NotFoundException {
         try {
             return ResponseEntity.ok().body(usersService.findByUsername(username));
-        } catch ( Exception e) {
+        } catch ( NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

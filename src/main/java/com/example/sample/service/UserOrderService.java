@@ -4,7 +4,7 @@ package com.example.sample.service;
 import com.example.sample.consumer.dto.StocksDto;
 import com.example.sample.consumer.service.StockService;
 import com.example.sample.dto.UserOrderDTO;
-import com.example.sample.handleError.NotFoundException;
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.UserStockBalance;
 import com.example.sample.models.UserStockBalanceId;
@@ -152,7 +152,7 @@ public class UserOrderService {
 
 
     public UserOrderDTO saveBuy(UserOrderDTO userOrderDTO, String token){
-        Users users = usersRepository.findById(userOrderDTO.getId_user()).orElseThrow();
+        Users users = usersRepository.findById(userOrderDTO.getIdUser()).orElseThrow();
         var totalAmount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
         if (totalAmount <= users.getDollarBalance()) {
             UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
@@ -163,11 +163,11 @@ public class UserOrderService {
             usersRepository.save(users);
 
             // atualiza o bid min/bid max
-            updateStockPrice(userOrderDTO.getId_stock(), token);
+            updateStockPrice(userOrderDTO.getIdStock(), token);
 
             // busca uma ordem equivalente
-            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
-                    userOrderDTO.getType(), userOrderDTO.getId_user());
+            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getIdStock(),
+                    userOrderDTO.getType(), userOrderDTO.getIdUser());
 
             for (UserOrders orderSell : userOrders1) {
 
@@ -190,8 +190,8 @@ public class UserOrderService {
     }
 
     public UserOrderDTO saveSell(UserOrderDTO userOrderDTO, String token){
-        Users users = usersRepository.findById(userOrderDTO.getId_user()).orElseThrow();
-        UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, userOrderDTO.getId_stock())).orElseThrow();
+        Users users = usersRepository.findById(userOrderDTO.getIdUser()).orElseThrow();
+        UserStockBalance userStockBalance = userStockBalanceRepository.findById(new UserStockBalanceId(users, userOrderDTO.getIdStock())).orElseThrow();
         if (userOrderDTO.getVolume() <= userStockBalance.getVolume()) {
 
             // salva a ordem
@@ -203,17 +203,17 @@ public class UserOrderService {
             userStockBalanceRepository.save(userStockBalance);
 
             // atualiza o bid ask/ask max
-            updateStockPrice(userOrderDTO.getId_stock(), token);
+            updateStockPrice(userOrderDTO.getIdStock(), token);
 
             // encontra a ordem compativel
-            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getId_stock(),
-                    userOrderDTO.getType(), userOrderDTO.getId_user());
+            List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getIdStock(),
+                    userOrderDTO.getType(), userOrderDTO.getIdUser());
 
             for (UserOrders orderBuy : userOrders1) {
                 if (orderSell.getPrice() <= orderBuy.getPrice()) {
                     checkRemainingVolume(orderBuy.getId(), orderSell.getId(), orderBuy.getVolume(), orderSell.getVolume());
                     double finalBalance1 = orderSell.getUsers().getDollarBalance();
-                    updateDollarBalance(userOrderDTO.getPrice(), userOrderDTO.getVolume(), userOrderDTO.getId_user(), userOrderDTO.getType(), finalBalance1);
+                    updateDollarBalance(userOrderDTO.getPrice(), userOrderDTO.getVolume(), userOrderDTO.getIdUser(), userOrderDTO.getType(), finalBalance1);
                     updateStockBalance(orderBuy.getUsers(), orderBuy.getIdStock(), orderBuy.getStockSymbol(), orderBuy.getStockName(), orderBuy.getVolume(), orderSell.getVolume(), orderBuy.getType());
                 }
             }
