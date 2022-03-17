@@ -81,13 +81,13 @@ public class UserOrderService {
         }
     }
 
-    public void updateStockPrice(Long idStock, String token){
+    public void updateStockPrice(Long idStock, String stockName, String stockSymbol, String token){
         Double bidMin = userOrdersRepository.findByIdStockMinPriceBid(idStock);
         Double bidMax = userOrdersRepository.findByIdStockMaxPriceBid(idStock);
         Double askMin = userOrdersRepository.findByIdStockMinPriceAsk(idStock);
         Double askMax = userOrdersRepository.findByIdStockMaxPriceAsk(idStock);
 
-        StocksDto stocksDto = new StocksDto(idStock, bidMin, bidMax, askMin, askMax);
+        StocksDto stocksDto = new StocksDto(idStock, stockSymbol, stockName, bidMin, bidMax, askMin, askMax);
 
         stockService.updateStockbyPrice(stocksDto, token);
 
@@ -153,8 +153,10 @@ public class UserOrderService {
 
     public UserOrderDTO saveBuy(UserOrderDTO userOrderDTO, String token){
         Users users = usersRepository.findById(userOrderDTO.getIdUser()).orElseThrow();
+        System.out.println(userOrderDTO.getIdUser());
         var totalAmount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
         if (totalAmount <= users.getDollarBalance()) {
+            System.out.println("chegou no dollar balance");
             UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
 
             // retem o valor do usuario mesmo antes da ordem fechar
@@ -163,7 +165,7 @@ public class UserOrderService {
             usersRepository.save(users);
 
             // atualiza o bid min/bid max
-            updateStockPrice(userOrderDTO.getIdStock(), token);
+            updateStockPrice(userOrderDTO.getIdStock(), userOrderDTO.getStockSymbol(), userOrderDTO.getStockName(), token);
 
             // busca uma ordem equivalente
             List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getIdStock(),
@@ -203,7 +205,7 @@ public class UserOrderService {
             userStockBalanceRepository.save(userStockBalance);
 
             // atualiza o bid ask/ask max
-            updateStockPrice(userOrderDTO.getIdStock(), token);
+            updateStockPrice(userOrderDTO.getIdStock(), userOrderDTO.getStockSymbol(), userOrderDTO.getStockName(), token);
 
             // encontra a ordem compativel
             List<UserOrders> userOrders1 = userOrdersRepository.findByStockAndTypeOrderAndIdUser(userOrderDTO.getIdStock(),

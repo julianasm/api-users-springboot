@@ -30,6 +30,13 @@ public class UserStockBalanceId implements Serializable {
         this.users = users;
     }
 
+    public Long getIdStock() {
+        return idStock;
+    }
+
+    public void setIdStock(Long idStock) {
+        this.idStock = idStock;
+    }
 
     @Override
     public boolean equals(Object o) {

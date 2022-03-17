@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -46,9 +48,12 @@ public class UserOrders implements Serializable{
     private Double price;
 
     @Column(name="created_on")
+    @CreationTimestamp
     private Timestamp createdOn;
 
+    @UpdateTimestamp
     @Column(name="updated_on")
+
     private Timestamp updatedOn;
 
     @Column(name="remaining_volume")

@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin
+@CrossOrigin("http://localhost:8081/")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api")
@@ -35,19 +35,19 @@ public class UserOrdersResources {
 
     private final UserOrdersRepository userOrdersRepository;
 
-    @CrossOrigin
+
     @GetMapping("/orders")
     public Page<UserOrders> listaPedidos(@RequestParam int pageSize, @RequestParam int pageNumber){
         return userOrderService.findOrdersPage(pageSize, pageNumber);
     }
 
-    @CrossOrigin
+
     @GetMapping("/orders/{id}")
     public Page<UserOrders> listaOrdemPorId(@PathVariable Long id, @RequestParam int pageNumber, int pageSize){
         return userOrderService.findOrdersPageById(id, pageSize, pageNumber);
     }
 
-    @CrossOrigin
+
     @PostMapping("/order-update/{status}")
     public ResponseEntity<UserOrders> updateOrder(@RequestBody UpdateOrderDto dto, @PathVariable("status") Integer status, @RequestHeader("Authorization") String token) throws NotFoundException {
         try {
@@ -56,7 +56,7 @@ public class UserOrdersResources {
             return ResponseEntity.badRequest().build();
         }
     }
-    @CrossOrigin
+
     @PostMapping("/new_order")
     public ResponseEntity<UserOrderDTO> salvar(@RequestBody UserOrderDTO dto, @RequestHeader("Authorization") String token) {
         try {
@@ -64,7 +64,6 @@ public class UserOrdersResources {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
 }

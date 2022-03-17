@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin("http://localhost:8081/")
 @RestController
 @RequestMapping(value="/api")
 @RequiredArgsConstructor
@@ -20,22 +20,21 @@ public class UsersResources{
 
     private final UsersService usersService;
 
-    @CrossOrigin
+
     @GetMapping("/users")
     public List<Users> listaUsers(){
         return usersService.listAll();
     }
 
-    @CrossOrigin
+
     @GetMapping("/users-id")
     public List<UsersDTO> listUsersId() throws InterruptedException {
-
         Thread.sleep(3000);
 
         return usersService.listAllDto();
     }
 
-    @CrossOrigin
+
     @GetMapping("/users/{id}")
     public ResponseEntity<Users> getUser(@PathVariable("id") Long id) {
         try {
@@ -47,7 +46,7 @@ public class UsersResources{
     }
 
 
-    @CrossOrigin
+
     @GetMapping("/users/username/{username}")
     public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws NotFoundException {
         try {
@@ -57,7 +56,7 @@ public class UsersResources{
         }
     }
 
-    @CrossOrigin
+
     @PostMapping("/new_user")
     public ResponseEntity<SaveUserDto> salvar(@RequestBody SaveUserDto dto) {
         return ResponseEntity.ok().body(usersService.salvar(dto));

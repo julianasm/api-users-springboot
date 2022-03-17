@@ -38,4 +38,12 @@ public class UserStockBalanceDTO {
                 volume);
     }
 
+    public UserStockBalanceDTO(UserStockBalance userStockBalance){
+        this.idUser = userStockBalance.getId().getUsers().getId();
+        this.idStock = userStockBalance.getId().getIdStock();
+        this.stockSymbol = userStockBalance.getStockSymbol();
+        this.stockName = userStockBalance.getStockName();
+        this.volume = userStockBalance.getVolume();
+    }
+
 }

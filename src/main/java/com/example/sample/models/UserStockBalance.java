@@ -45,8 +45,7 @@ public class UserStockBalance implements Serializable {
         this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
-
-
+    
     public UserStockBalance(UserStockBalanceId id , String stockSymbol, String stockName, Long volume) {
         this.id = id;
 
