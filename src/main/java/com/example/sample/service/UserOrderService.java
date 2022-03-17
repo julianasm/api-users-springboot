@@ -153,10 +153,8 @@ public class UserOrderService {
 
     public UserOrderDTO saveBuy(UserOrderDTO userOrderDTO, String token){
         Users users = usersRepository.findById(userOrderDTO.getIdUser()).orElseThrow();
-        System.out.println(userOrderDTO.getIdUser());
         var totalAmount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
-        if (totalAmount <= users.getDollarBalance()) {
-            System.out.println("chegou no dollar balance");
+        if (totalAmount <= users.getDollarBalance()){
             UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
 
             // retem o valor do usuario mesmo antes da ordem fechar

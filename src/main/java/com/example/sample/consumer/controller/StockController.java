@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-@CrossOrigin("http://localhost:8081")
+@CrossOrigin(origins = {"http://localhost:8081/", "http://localhost:8083"})
 @RestController
 public class StockController {
 
@@ -33,7 +32,7 @@ public class StockController {
     }
 
 
-    @CrossOrigin
+
     @GetMapping("/stocks")
     public ResponseEntity<StockInfoDto[]> getAllStocks(@RequestHeader("Authorization") String token){
 
@@ -43,7 +42,6 @@ public class StockController {
     }
 
 
-    @CrossOrigin
     @PostMapping ("/updateStock")
     public ResponseEntity<StockId> updateStockbyId(@RequestHeader("Authorization") String token){
         return null;
