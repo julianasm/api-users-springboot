@@ -9,14 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin
+@CrossOrigin("http://localhost:8081")
 @RestController
 public class StockController {
 
     @Autowired
     private StockService stockService;
 
-    @CrossOrigin
     @GetMapping("/stocks/{id}")
     public ResponseEntity<StocksDto> getStockbyId(@PathVariable Long id, @RequestHeader("Authorization") String token){
 
@@ -25,7 +24,6 @@ public class StockController {
         return ResponseEntity.ok(stocksDto);
     }
 
-    @CrossOrigin
     @GetMapping("/stock-info/{id}")
     public ResponseEntity<StockInfoDto> getStockInfoById(@PathVariable Long id, @RequestHeader("Authorization") String token){
 
