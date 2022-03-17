@@ -9,28 +9,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Transactional
 @Repository
 public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
-   /* @Query(value = "SELECT * FROM user_orders WHERE type = ?1 and id_stock = ?2 and status = 1", nativeQuery = true)
-    List<UserOrders> findByTypeStock(Integer type, Long id_stock);*/
 
     @Query(value = "SELECT * FROM user_orders uo where uo.id_stock = :id_stock  and uo.type <> :type and uo.id_user <> :id_user and status = 1 order by created_on", nativeQuery = true)
-    List<UserOrders> findByStockAndTypeOrderAndIdUser(@Param("id_stock") Long id_stock,
+    List<UserOrders> findByStockAndTypeOrderAndIdUser(@Param("id_stock") Long idStock,
                                                       @Param("type") Integer type,
-                                                      @Param("id_user") Long id_user);
+                                                      @Param("id_user") Long idUser);
 
     @Query(value = "SELECT * from user_orders uo where id_user = :id_user", nativeQuery = true)
     Page<UserOrders> findByIdPageable(Pageable pageable, @Param("id_user") Long id);
 
     @Modifying
     @Query(value = "UPDATE  user_orders set remaining_volume = :remaining_volume where id = :id", nativeQuery = true)
-    Integer findByIdOrder(@Param("remaining_volume") Long remaining_volume,
+    Integer findByIdOrder(@Param("remaining_volume") Long remainingVolume,
                           @Param("id") Long id);
 
 
@@ -39,16 +35,16 @@ public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
     Integer findbyIdStatus(@Param("id") Long id);
 
     @Query(value = "SELECT min(price) from user_orders uo where uo.id_stock = :id_stock and uo.type = 1 and uo.status = 1", nativeQuery = true)
-    Double findByIdStockMinPriceBid(@Param("id_stock") Long id_stock);
+    Double findByIdStockMinPriceBid(@Param("id_stock") Long idStock);
 
     @Query(value = "SELECT max(price) from user_orders uo where uo.id_stock = :id_stock and uo.type = 1 and uo.status = 1", nativeQuery = true)
-    Double findByIdStockMaxPriceBid(@Param("id_stock") Long id_stock);
+    Double findByIdStockMaxPriceBid(@Param("id_stock") Long idStock);
 
     @Query(value = "SELECT min(price) from user_orders uo where uo.id_stock = :id_stock and uo.type = 2 and uo.status = 1", nativeQuery = true)
-    Double findByIdStockMinPriceAsk(@Param("id_stock") Long id_stock);
+    Double findByIdStockMinPriceAsk(@Param("id_stock") Long idStock);
 
     @Query(value = "SELECT max(price) from user_orders uo where uo.id_stock = :id_stock and uo.type = 2 and uo.status = 1", nativeQuery = true)
-    Double findByIdStockMaxPriceAsk(@Param("id_stock") Long id_stock);
+    Double findByIdStockMaxPriceAsk(@Param("id_stock") Long idStock);
 
 }
 

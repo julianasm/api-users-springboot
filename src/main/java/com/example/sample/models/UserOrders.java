@@ -4,16 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 @Table(name="user_orders")
 public class UserOrders implements Serializable{
 
@@ -28,11 +30,14 @@ public class UserOrders implements Serializable{
     @JoinColumn(name="id_user")
     private Users users;
 
-    private Long id_stock;
+    @Column(name="id_stock")
+    private Long idStock;
 
-    private String stock_symbol;
+    @Column(name="stock_symbol")
+    private String stockSymbol;
 
-    private String stock_name;
+    @Column(name="stock_name")
+    private String stockName;
 
     private Long volume;
 
@@ -42,28 +47,16 @@ public class UserOrders implements Serializable{
 
     private Double price;
 
-    private Timestamp created_on;
+    @Column(name="created_on")
+    @CreationTimestamp
+    private Timestamp createdOn;
 
-    private Timestamp updated_on;
+    @UpdateTimestamp
+    @Column(name="updated_on")
 
-    private Long remaining_volume;
+    private Timestamp updatedOn;
 
-    public UserOrders(Users users, Long id_stock, String stock_symbol, String stock_name, Long volume, Integer type, Integer status, Double price, Long remaining_volume) {
-        this.users = users;
-        this.id_stock = id_stock;
-        this.stock_symbol = stock_symbol;
-        this.stock_name = stock_name;
-        this.volume = volume;
-        this.price = price;
-        this.type = type;
-        this.status = status;
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
-        this.remaining_volume = remaining_volume;
-    }
+    @Column(name="remaining_volume")
+    private Long remainingVolume;
 
-    public UserOrders(){
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
-    }
 }

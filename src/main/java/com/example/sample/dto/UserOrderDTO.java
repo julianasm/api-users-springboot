@@ -3,19 +3,21 @@ package com.example.sample.dto;
 import com.example.sample.models.UserOrders;
 import com.example.sample.models.Users;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class UserOrderDTO {
 
-    private Long id_user;
+    private Long idUser;
 
-    private Long id_stock;
+    private Long idStock;
 
-    private String stock_symbol;
+    private String stockSymbol;
 
-    private String stock_name;
+    private String stockName;
 
     private Long volume;
 
@@ -25,22 +27,23 @@ public class UserOrderDTO {
 
     private Double price;
 
-    private Long remaining_volume;
+    private Long remainingVolume;
 
 
-    public UserOrderDTO(){}
 
     public UserOrders transformaParaObjeto(Users users){
-        return new UserOrders(
-                users,
-                id_stock,
-                stock_symbol,
-                stock_name,
-                volume,
-                type,
-                status,
-                price,
-                remaining_volume);
+        UserOrders userOrders = new UserOrders();
+                userOrders.setUsers(users);
+                userOrders.setIdStock(idStock);
+                userOrders.setStockSymbol(stockSymbol);
+                userOrders.setStockName(stockName);
+                userOrders.setVolume(volume);
+                userOrders.setType(type);
+                userOrders.setStatus(status);
+                userOrders.setPrice(price);
+                userOrders.setRemainingVolume(remainingVolume);
+
+                return userOrders;
     }
 }
 

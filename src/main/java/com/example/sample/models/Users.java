@@ -27,33 +27,36 @@ public class Users implements Serializable {
 
     private String password;
 
-    private Double dollar_balance;
+    @Column(name="dollar_balance")
+    private Double dollarBalance;
 
     private Boolean enabled = true;
 
-    private Timestamp created_on;
+    @Column(name="created_on")
+    private Timestamp createdOn;
 
-    private Timestamp updated_on;
+    @Column(name="updated_on")
+    private Timestamp updatedOn;
 
     public Users () {
         this.enabled = true;
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
     public Users(Long id) {
         this.id = id;
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
-    public Users(String username, String password, Double dollar_balance, Boolean enabled) {
+    public Users(String username, String password, Double dollarBalance, Boolean enabled) {
         this.username = username;
         this.password = password;
-        this.dollar_balance = dollar_balance;
+        this.dollarBalance = dollarBalance;
         this.enabled = enabled;
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 }
 

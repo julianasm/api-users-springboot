@@ -1,13 +1,12 @@
 package com.example.sample.dto;
 
 
-import com.example.sample.models.UserOrders;
 import com.example.sample.models.Users;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-
+@NoArgsConstructor
 @Setter
 @Getter
 public class SaveUserDto {
@@ -16,18 +15,16 @@ public class SaveUserDto {
 
     private String password;
 
-    private Double dollar_balance;
+    private Double dollarBalance;
 
     private Boolean enabled = true;
-
-    public SaveUserDto(){}
 
 
     public Users transformaParaObjeto(){
         return new Users(
                 username,
                 password,
-                dollar_balance,
+                dollarBalance,
                 enabled
         );
     }

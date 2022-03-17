@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin("http://localhost:8081/")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value="/api")
@@ -30,25 +30,21 @@ public class UserStockBalanceResources {
 
     private final UserStockBalanceService userStockBalanceService;
 
-    @CrossOrigin
+
     @GetMapping("/user_stock/{id}")
-    public List<UserStockBalance> listaUserStock(@PathVariable Long id) {
-        List<UserStockBalance> userStockBlance = userStockBalanceRepository.findAllByIdUser(id);
-        return userStockBlance;
+    public List<UserStockBalanceDTO> listaUserStock(@PathVariable Long id) {
+        return userStockBalanceService.listByIdUser(id);
     }
 
-
-    @CrossOrigin
     @GetMapping("/user_stock")
     public List<UserStockBalance> listaUserStock() {
         return userStockBalanceRepository.findAll();
     }
 
-    @CrossOrigin
     @PostMapping("/new-user-stock")
     public ResponseEntity<UserStockBalance> salvar(@RequestBody UserStockBalanceDTO dto) {
-        Users users = usersRepository.findById(dto.getId_user()).orElseThrow();
-        UserStockBalance userStockBalance = userStockBalanceService.findById(users, dto.getId_stock()).orElse(userStockBalanceService.salvar(dto.transformaParaObjeto(users)));
+        Users users = usersRepository.findById(dto.getIdUser()).orElseThrow();
+        UserStockBalance userStockBalance = userStockBalanceService.findById(users, dto.getIdStock()).orElse(userStockBalanceService.salvar(dto.transformaParaObjeto(users)));
         return new ResponseEntity<>(userStockBalance, HttpStatus.CREATED);
     }
 

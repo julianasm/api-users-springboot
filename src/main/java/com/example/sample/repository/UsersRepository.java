@@ -17,7 +17,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Modifying
     @Query(value = "UPDATE users set dollar_balance = :dollar_balance where id = :id", nativeQuery = true)
     Integer findbyIdSetDollarBalance(@Param("id") Long id,
-                                     @Param("dollar_balance") Double dollar_balance);
+                                     @Param("dollar_balance") Double dollarBalance);
 
     @Query(value = "SELECT * FROM users where username = :username", nativeQuery = true)
     Optional<Users> findByUsername(@Param("username") String username);

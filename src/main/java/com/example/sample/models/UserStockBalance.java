@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -23,37 +22,40 @@ public class UserStockBalance implements Serializable {
     @EmbeddedId
     private UserStockBalanceId id;
 
-    private String stock_symbol;
+    @Column(name="stock_symbol")
+    private String stockSymbol;
 
-    private String stock_name;
+    @Column(name="stock_name")
+    private String stockName;
 
     private Long volume;
 
     @CreationTimestamp
-    private Timestamp created_on;
+    @Column(name="created_on")
+    private Timestamp createdOn;
 
     @UpdateTimestamp
-    private Timestamp updated_on;
+    @Column(name="updated_on")
+    private Timestamp updatedOn;
 
 
 
     public UserStockBalance() {
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
-
-
-    public UserStockBalance(UserStockBalanceId id , String stock_symbol, String stock_name, Long volume) {
+    
+    public UserStockBalance(UserStockBalanceId id , String stockSymbol, String stockName, Long volume) {
         this.id = id;
 
-        this.stock_symbol = stock_symbol;
+        this.stockSymbol = stockSymbol;
 
-        this.stock_name = stock_name;
+        this.stockName = stockName;
 
         this.volume = volume;
 
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 }

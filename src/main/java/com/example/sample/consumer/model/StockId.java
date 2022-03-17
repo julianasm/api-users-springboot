@@ -1,13 +1,11 @@
 package com.example.sample.consumer.model;
 
-import com.fasterxml.jackson.databind.node.DoubleNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -19,21 +17,21 @@ import java.time.LocalDateTime;
 public class StockId {
 
     private Long id;
-    private String stock_symbol;
-    private String stock_name;
-    private Double ask_min;
-    private Double ask_max;
-    private Double bid_min;
-    private Double bid_max;
+    private String stockSymbol;
+    private String stockName;
+    private Double askMin;
+    private Double askMax;
+    private Double bidMin;
+    private Double bidMax;
 
     @CreationTimestamp
-    private Timestamp created_on;
+    private Timestamp createdOn;
     @UpdateTimestamp
-    private Timestamp updated_on;
+    private Timestamp updatedOn;
 
     public StockId() {
-        this.created_on = Timestamp.valueOf(LocalDateTime.now());
-        this.updated_on = Timestamp.valueOf(LocalDateTime.now());
+        this.createdOn = Timestamp.valueOf(LocalDateTime.now());
+        this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
 }

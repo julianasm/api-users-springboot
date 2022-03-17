@@ -2,10 +2,10 @@ package com.example.sample.service;
 
 import com.example.sample.dto.SaveUserDto;
 import com.example.sample.dto.UsersDTO;
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.Users;
 import com.example.sample.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,17 +28,16 @@ public class UsersService {
     }
 
     public Users findById(Long id) {
-        Users users = usersRepository.findById(id).orElseThrow();
-        return users;
+        return usersRepository.findById(id).orElseThrow();
     }
 
 
-    public UsersDTO findByUsername(String username) throws Exception{
+    public UsersDTO findByUsername(String username) throws NotFoundException {
        Optional<Users> users =  usersRepository.findByUsername(username);
-       if (users.isPresent()){;
+       if (users.isPresent()){
             return new UsersDTO(users.get().getId());
        } else {
-           throw new Exception("NOT_FOUND");
+           throw new NotFoundException("NOT_FOUND");
        }
     }
 

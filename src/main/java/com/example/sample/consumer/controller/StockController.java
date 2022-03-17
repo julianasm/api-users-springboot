@@ -1,16 +1,13 @@
 package com.example.sample.consumer.controller;
 
-import com.example.sample.consumer.DTO.StockInfoDto;
-import com.example.sample.consumer.DTO.StocksDto;
+import com.example.sample.consumer.dto.StockInfoDto;
+import com.example.sample.consumer.dto.StocksDto;
 import com.example.sample.consumer.model.StockId;
 import com.example.sample.consumer.service.StockService;
-import com.example.sample.models.UserOrders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @CrossOrigin
 @RestController
