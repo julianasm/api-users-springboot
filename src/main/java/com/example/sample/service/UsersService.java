@@ -2,11 +2,10 @@ package com.example.sample.service;
 
 import com.example.sample.dto.SaveUserDto;
 import com.example.sample.dto.UsersDTO;
-import com.example.sample.handleError.NotFoundException;
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.Users;
 import com.example.sample.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.example.sample.resources;
 
+import com.example.sample.handleerror.NotFoundException;
 import com.example.sample.models.Users;
 import com.example.sample.dto.SaveUserDto;
 import com.example.sample.dto.UsersDTO;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin("http://localhost:8081/")
 @RestController
 @RequestMapping(value="/api")
 @RequiredArgsConstructor
@@ -19,22 +20,21 @@ public class UsersResources{
 
     private final UsersService usersService;
 
-    @CrossOrigin
+
     @GetMapping("/users")
     public List<Users> listaUsers(){
         return usersService.listAll();
     }
 
-    @CrossOrigin
+
     @GetMapping("/users-id")
     public List<UsersDTO> listUsersId() throws InterruptedException {
-
         Thread.sleep(3000);
 
         return usersService.listAllDto();
     }
 
-    @CrossOrigin
+
     @GetMapping("/users/{id}")
     public ResponseEntity<Users> getUser(@PathVariable("id") Long id) {
         try {
@@ -46,9 +46,9 @@ public class UsersResources{
     }
 
 
-    @CrossOrigin
+
     @GetMapping("/users/username/{username}")
-    public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws Exception {
+    public ResponseEntity<UsersDTO> findByUsername(@PathVariable("username") String username) throws NotFoundException {
         try {
             return ResponseEntity.ok().body(usersService.findByUsername(username));
         } catch ( Exception e) {
@@ -56,7 +56,7 @@ public class UsersResources{
         }
     }
 
-    @CrossOrigin
+
     @PostMapping("/new_user")
     public ResponseEntity<SaveUserDto> salvar(@RequestBody SaveUserDto dto) {
         return ResponseEntity.ok().body(usersService.salvar(dto));

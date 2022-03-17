@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -46,8 +45,7 @@ public class UserStockBalance implements Serializable {
         this.updatedOn = Timestamp.valueOf(LocalDateTime.now());
     }
 
-
-
+    
     public UserStockBalance(UserStockBalanceId id , String stockSymbol, String stockName, Long volume) {
         this.id = id;
 

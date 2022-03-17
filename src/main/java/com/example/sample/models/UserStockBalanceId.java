@@ -1,7 +1,5 @@
 package com.example.sample.models;
 
-import com.example.sample.models.Users;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,9 +17,9 @@ public class UserStockBalanceId implements Serializable {
     public UserStockBalanceId() {
     }
 
-    public UserStockBalanceId(Users users, Long id_stock) {
+    public UserStockBalanceId(Users users, Long idStock) {
         this.users = users;
-        this.idStock = id_stock;
+        this.idStock = idStock;
     }
 
     public Users getUsers() {
@@ -32,12 +30,12 @@ public class UserStockBalanceId implements Serializable {
         this.users = users;
     }
 
-    public Long getId_stock() {
+    public Long getIdStock() {
         return idStock;
     }
 
-    public void setId_stock(Long id_stock) {
-        this.idStock = id_stock;
+    public void setIdStock(Long idStock) {
+        this.idStock = idStock;
     }
 
     @Override

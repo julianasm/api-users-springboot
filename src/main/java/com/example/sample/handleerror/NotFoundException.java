@@ -1,4 +1,4 @@
-package com.example.sample.handleError;
+package com.example.sample.handleerror;
 
 public class NotFoundException extends Exception{
     public NotFoundException(String errorMessage){
