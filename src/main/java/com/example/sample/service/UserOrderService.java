@@ -12,7 +12,6 @@ import com.example.sample.models.Users;
 import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,9 +37,6 @@ public class UserOrderService {
     @Autowired
     UserStockBalanceRepository userStockBalanceRepository;
 
-    public UserOrderService() {
-
-    }
 
 
     public UserOrders updateStatus(Long id, Integer status) throws NotFoundException {
