@@ -111,7 +111,6 @@ public class UserOrderService {
             usersRepository.findbyIdSetDollarBalance(id, finalBalance);
         }
     }
-
     public void updateStockBalance(Users userId, Long stockId, String stockSymbol, String stockName, Long volumeBuy, Long volumeSell, int type) {
         if (type == 2){
             if (volumeSell > volumeBuy){
