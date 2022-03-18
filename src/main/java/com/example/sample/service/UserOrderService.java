@@ -106,7 +106,6 @@ public class UserOrderService {
             usersRepository.save(users);
         }
     }
-
     public void updateDollarBalance(Double price, Long volume, Long id, int type, Double finalBalance) {
         if (type == 1) {
             finalBalance = finalBalance - (price * volume);
