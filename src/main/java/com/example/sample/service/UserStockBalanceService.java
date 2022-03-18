@@ -25,7 +25,6 @@ public class UserStockBalanceService {
     public Optional<UserStockBalance> findById(Users users, Long idStock){
         return userStockBalanceRepository.findById(new UserStockBalanceId(users, idStock));
     }
-
     public List<UserStockBalanceDTO> listByIdUser(Long id){
         return userStockBalanceRepository.findAllByIdUser(id).stream().map(UserStockBalanceDTO::new).toList();
     }

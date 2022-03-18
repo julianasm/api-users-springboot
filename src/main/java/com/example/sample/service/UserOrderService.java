@@ -12,7 +12,7 @@ import com.example.sample.models.Users;
 import com.example.sample.repository.UserOrdersRepository;
 import com.example.sample.repository.UserStockBalanceRepository;
 import com.example.sample.repository.UsersRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +21,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
+
 @Service
 public class UserOrderService {
 
-    private final UserOrdersRepository userOrdersRepository;
+    @Autowired
+    UserOrdersRepository userOrdersRepository;
 
-    private final StockService stockService;
+    @Autowired
+    StockService stockService;
 
-    private final UsersRepository usersRepository;
+    @Autowired
+    UsersRepository usersRepository;
 
-    private final UserStockBalanceRepository userStockBalanceRepository;
+    @Autowired
+    UserStockBalanceRepository userStockBalanceRepository;
+
 
 
     public UserOrders updateStatus(Long id, Integer status) throws NotFoundException {
@@ -152,10 +157,8 @@ public class UserOrderService {
 
     public UserOrderDTO saveBuy(UserOrderDTO userOrderDTO, String token){
         Users users = usersRepository.findById(userOrderDTO.getIdUser()).orElseThrow();
-        System.out.println(userOrderDTO.getIdUser());
         var totalAmount = userOrderDTO.getPrice() * userOrderDTO.getVolume();
-        if (totalAmount <= users.getDollarBalance()) {
-            System.out.println("chegou no dollar balance");
+        if (totalAmount <= users.getDollarBalance()){
             UserOrders orderBuy = userOrdersRepository.save(userOrderDTO.transformaParaObjeto(users));
 
             // retem o valor do usuario mesmo antes da ordem fechar
